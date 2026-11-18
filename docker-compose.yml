@@ -1,0 +1,22 @@
+services:
+  jimeng2api:
+    build:
+      context: .
+      args:
+        # 需要「扫码登录」时改成 1（镜像 +300MB）
+        WITH_LOGIN: ${WITH_LOGIN:-0}
+    image: jimeng2api:0.1.0
+    container_name: jimeng2api
+    restart: unless-stopped
+    ports:
+      # 只绑回环：公网入口交给 nginx（与其它自建服务一致）
+      - "127.0.0.1:8300:8300"
+    volumes:
+      - ./data:/data
+    environment:
+      JIMENG2API_DATA: /data
+      # 不设则首次启动随机生成，写到 data/first_boot_key.txt
+      JIMENG2API_ADMIN_KEY: ${JIMENG2API_ADMIN_KEY:-}
+      JIMENG_DA_VERSION: ${JIMENG_DA_VERSION:-3.3.40}
+      JIMENG2API_COORDINATOR: "1"
+    stop_grace_period: 30s

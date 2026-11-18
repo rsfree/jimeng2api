@@ -1,0 +1,3532 @@
+{
+ "captured_at": 1795014287,
+ "source": "jimeng.jianying.com get_common_config",
+ "da_version": "3.3.40",
+ "models": [
+  {
+   "key": "high_aes_general_v55",
+   "name": "Seedream 5.5",
+   "tip": "SOTA，全新模型，提升真实感、复杂图文场景能力、编辑能力",
+   "new": true,
+   "feats": [
+    "default_scene",
+    "t2i",
+    "byte_edit",
+    "byte_edit_2k",
+    "byte_edit_hr",
+    "refuse_image",
+    "smart_scale",
+    "per_piece",
+    "byte_edit_with_empty_prompt",
+    "byte_edit_with_custom_ratio",
+    "etta",
+    "support_subject",
+    "new_model"
+   ],
+   "counts": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+   ],
+   "default_count": 4,
+   "resolutions": {
+    "1.5k": {
+     "name": "标清 1.5K",
+     "sizes": [
+      {
+       "ratio": 1,
+       "w": 1536,
+       "h": 1536
+      },
+      {
+       "ratio": 2,
+       "w": 1296,
+       "h": 1728
+      },
+      {
+       "ratio": 3,
+       "w": 1920,
+       "h": 1080
+      },
+      {
+       "ratio": 4,
+       "w": 1728,
+       "h": 1296
+      },
+      {
+       "ratio": 5,
+       "w": 1080,
+       "h": 1920
+      },
+      {
+       "ratio": 6,
+       "w": 1248,
+       "h": 1872
+      },
+      {
+       "ratio": 7,
+       "w": 1872,
+       "h": 1248
+      },
+      {
+       "ratio": 8,
+       "w": 2268,
+       "h": 972
+      }
+     ]
+    },
+    "2k": {
+     "name": "高清 2K",
+     "sizes": [
+      {
+       "ratio": 1,
+       "w": 2048,
+       "h": 2048
+      },
+      {
+       "ratio": 2,
+       "w": 1728,
+       "h": 2304
+      },
+      {
+       "ratio": 3,
+       "w": 2560,
+       "h": 1440
+      },
+      {
+       "ratio": 4,
+       "w": 2304,
+       "h": 1728
+      },
+      {
+       "ratio": 5,
+       "w": 1440,
+       "h": 2560
+      },
+      {
+       "ratio": 6,
+       "w": 1664,
+       "h": 2496
+      },
+      {
+       "ratio": 7,
+       "w": 2496,
+       "h": 1664
+      },
+      {
+       "ratio": 8,
+       "w": 3024,
+       "h": 1296
+      }
+     ]
+    }
+   },
+   "prices": {
+    "t2i": {
+     "default": 1,
+     "1.5k": 1,
+     "2k": 1,
+     "3k": 1
+    },
+    "i2i": {
+     "default": 1,
+     "1.5k": 1,
+     "2k": 1,
+     "3k": 1
+    }
+   },
+   "max_images": 10,
+   "max_prompt_length": 5000
+  },
+  {
+   "key": "dreamina_crowd_test",
+   "name": "Aura（测试模型）",
+   "tip": "测试模型效果，不代表最终上线定版效果",
+   "new": true,
+   "feats": [
+    "new_model",
+    "default_scene",
+    "t2i",
+    "byte_edit",
+    "byte_edit_2k",
+    "byte_edit_hr",
+    "refuse_image",
+    "smart_scale",
+    "per_piece",
+    "byte_edit_with_empty_prompt",
+    "byte_edit_with_custom_ratio",
+    "etta",
+    "support_subject",
+    "crowd_test"
+   ],
+   "counts": [
+    2
+   ],
+   "default_count": 2,
+   "resolutions": {
+    "2k": {
+     "name": "高清 2K",
+     "sizes": [
+      {
+       "ratio": 1,
+       "w": 2048,
+       "h": 2048
+      },
+      {
+       "ratio": 2,
+       "w": 1728,
+       "h": 2304
+      },
+      {
+       "ratio": 3,
+       "w": 2560,
+       "h": 1440
+      },
+      {
+       "ratio": 4,
+       "w": 2304,
+       "h": 1728
+      },
+      {
+       "ratio": 5,
+       "w": 1440,
+       "h": 2560
+      },
+      {
+       "ratio": 6,
+       "w": 1664,
+       "h": 2496
+      },
+      {
+       "ratio": 7,
+       "w": 2496,
+       "h": 1664
+      },
+      {
+       "ratio": 8,
+       "w": 3024,
+       "h": 1296
+      }
+     ]
+    }
+   },
+   "prices": {
+    "t2i": {
+     "default": 1
+    },
+    "i2i": {
+     "default": 1
+    }
+   },
+   "max_images": 6,
+   "max_prompt_length": 2000
+  },
+  {
+   "key": "high_aes_general_v50p_large",
+   "name": "Seedream 5.0 Pro",
+   "tip": "商业设计、影视、高密度图文等场景效果全面提升",
+   "new": false,
+   "feats": [
+    "default_scene",
+    "t2i",
+    "byte_edit",
+    "byte_edit_2k",
+    "byte_edit_hr",
+    "refuse_image",
+    "smart_scale",
+    "per_piece",
+    "byte_edit_with_empty_prompt",
+    "byte_edit_with_custom_ratio",
+    "etta",
+    "support_subject"
+   ],
+   "counts": [
+    1,
+    2,
+    3,
+    4
+   ],
+   "default_count": 2,
+   "resolutions": {
+    "1.5k": {
+     "name": "标清 1.5K",
+     "sizes": [
+      {
+       "ratio": 1,
+       "w": 1536,
+       "h": 1536
+      },
+      {
+       "ratio": 5,
+       "w": 1080,
+       "h": 1920
+      },
+      {
+       "ratio": 3,
+       "w": 1920,
+       "h": 1080
+      },
+      {
+       "ratio": 2,
+       "w": 1296,
+       "h": 1728
+      },
+      {
+       "ratio": 4,
+       "w": 1728,
+       "h": 1296
+      },
+      {
+       "ratio": 6,
+       "w": 1248,
+       "h": 1872
+      },
+      {
+       "ratio": 7,
+       "w": 1872,
+       "h": 1248
+      },
+      {
+       "ratio": 13,
+       "w": 972,
+       "h": 2268
+      },
+      {
+       "ratio": 8,
+       "w": 2268,
+       "h": 972
+      }
+     ]
+    },
+    "2k": {
+     "name": "高清 2K",
+     "sizes": [
+      {
+       "ratio": 1,
+       "w": 2048,
+       "h": 2048
+      },
+      {
+       "ratio": 5,
+       "w": 1440,
+       "h": 2560
+      },
+      {
+       "ratio": 3,
+       "w": 2560,
+       "h": 1440
+      },
+      {
+       "ratio": 2,
+       "w": 1728,
+       "h": 2304
+      },
+      {
+       "ratio": 4,
+       "w": 2304,
+       "h": 1728
+      },
+      {
+       "ratio": 6,
+       "w": 1664,
+       "h": 2496
+      },
+      {
+       "ratio": 7,
+       "w": 2496,
+       "h": 1664
+      },
+      {
+       "ratio": 13,
+       "w": 1296,
+       "h": 3024
+      },
+      {
+       "ratio": 8,
+       "w": 3024,
+       "h": 1296
+      }
+     ]
+    },
+    "4k": {
+     "name": "超清（4K）",
+     "sizes": [
+      {
+       "ratio": 1,
+       "w": 4096,
+       "h": 4096
+      },
+      {
+       "ratio": 5,
+       "w": 3040,
+       "h": 5404
+      },
+      {
+       "ratio": 3,
+       "w": 5404,
+       "h": 3040
+      },
+      {
+       "ratio": 2,
+       "w": 3520,
+       "h": 4693
+      },
+      {
+       "ratio": 4,
+       "w": 4693,
+       "h": 3520
+      },
+      {
+       "ratio": 6,
+       "w": 3328,
+       "h": 4992
+      },
+      {
+       "ratio": 7,
+       "w": 4992,
+       "h": 3328
+      },
+      {
+       "ratio": 13,
+       "w": 2656,
+       "h": 6197
+      },
+      {
+       "ratio": 8,
+       "w": 6197,
+       "h": 2656
+      }
+     ]
+    }
+   },
+   "prices": {
+    "t2i": {
+     "default": 1,
+     "1k": 1,
+     "1.5k": 1,
+     "2k": 1,
+     "4k": 1
+    },
+    "i2i": {
+     "default": 1,
+     "1k": 1,
+     "1.5k": 1,
+     "2k": 1,
+     "4k": 1
+    }
+   },
+   "max_images": 10,
+   "max_prompt_length": 5000
+  },
+  {
+   "key": "jimeng_smart_image_v1",
+   "name": "即梦 ImageMax 1.0",
+   "tip": "Beta，全面升级的综合生图模型，擅长平面设计、影视创作、图片编辑",
+   "new": true,
+   "feats": [
+    "new_model",
+    "default_scene",
+    "t2i",
+    "byte_edit",
+    "refuse_image",
+    "byte_edit_2k",
+    "byte_edit_with_custom_ratio",
+    "per_piece",
+    "support_subject",
+    "disable_choose_high_width",
+    "hide_custom_ratio"
+   ],
+   "counts": [
+    1,
+    2,
+    3,
+    4
+   ],
+   "default_count": 4,
+   "resolutions": {
+    "1k": {
+     "name": "标清 1K",
+     "sizes": [
+      {
+       "ratio": 1,
+       "w": 1328,
+       "h": 1328
+      },
+      {
+       "ratio": 2,
+       "w": 1104,
+       "h": 1472
+      },
+      {
+       "ratio": 5,
+       "w": 864,
+       "h": 1536
+      },
+      {
+       "ratio": 3,
+       "w": 1536,
+       "h": 864
+      },
+      {
+       "ratio": 4,
+       "w": 1472,
+       "h": 1104
+      },
+      {
+       "ratio": 6,
+       "w": 1056,
+       "h": 1584
+      },
+      {
+       "ratio": 7,
+       "w": 1584,
+       "h": 1056
+      },
+      {
+       "ratio": 8,
+       "w": 2016,
+       "h": 864
+      }
+     ]
+    },
+    "2k": {
+     "name": "高清 2K",
+     "sizes": [
+      {
+       "ratio": 1,
+       "w": 2048,
+       "h": 2048
+      },
+      {
+       "ratio": 2,
+       "w": 1728,
+       "h": 2304
+      },
+      {
+       "ratio": 5,
+       "w": 1440,
+       "h": 2560
+      },
+      {
+       "ratio": 3,
+       "w": 2560,
+       "h": 1440
+      },
+      {
+       "ratio": 4,
+       "w": 2304,
+       "h": 1728
+      },
+      {
+       "ratio": 6,
+       "w": 1664,
+       "h": 2496
+      },
+      {
+       "ratio": 7,
+       "w": 2496,
+       "h": 1664
+      },
+      {
+       "ratio": 8,
+       "w": 3024,
+       "h": 1296
+      }
+     ]
+    },
+    "4k": {
+     "name": "超清（4K）",
+     "sizes": [
+      {
+       "ratio": 1,
+       "w": 2880,
+       "h": 2880
+      },
+      {
+       "ratio": 2,
+       "w": 2448,
+       "h": 3264
+      },
+      {
+       "ratio": 5,
+       "w": 2160,
+       "h": 3840
+      },
+      {
+       "ratio": 3,
+       "w": 3840,
+       "h": 2160
+      },
+      {
+       "ratio": 4,
+       "w": 3264,
+       "h": 2448
+      },
+      {
+       "ratio": 6,
+       "w": 2336,
+       "h": 3504
+      },
+      {
+       "ratio": 7,
+       "w": 3504,
+       "h": 2336
+      },
+      {
+       "ratio": 8,
+       "w": 3808,
+       "h": 1632
+      }
+     ]
+    }
+   },
+   "prices": {
+    "t2i": {
+     "default": 1,
+     "1k": 1,
+     "2k": 1,
+     "4k": 1
+    },
+    "i2i": {
+     "default": 1,
+     "1k": 1,
+     "2k": 1,
+     "4k": 1
+    }
+   },
+   "max_images": 4,
+   "max_prompt_length": 5000
+  },
+  {
+   "key": "jm_image_model_lib_f",
+   "name": "图片模型 Image 2.5 Flash",
+   "tip": "Beta，高速高质生成，通用图像生成首选",
+   "new": true,
+   "feats": [
+    "new_model",
+    "default_scene",
+    "disable_choose_high_width",
+    "t2i",
+    "byte_edit",
+    "refuse_image",
+    "byte_edit_with_custom_ratio",
+    "byte_edit_with_empty_prompt",
+    "byte_edit_2k",
+    "support_subject"
+   ],
+   "counts": [
+    1
+   ],
+   "default_count": 1,
+   "resolutions": {
+    "1k": {
+     "name": "标清 1K",
+     "sizes": [
+      {
+       "ratio": 1,
+       "w": 1328,
+       "h": 1328
+      },
+      {
+       "ratio": 11,
+       "w": 928,
+       "h": 1856
+      },
+      {
+       "ratio": 12,
+       "w": 1856,
+       "h": 928
+      },
+      {
+       "ratio": 5,
+       "w": 864,
+       "h": 1536
+      },
+      {
+       "ratio": 3,
+       "w": 1536,
+       "h": 864
+      },
+      {
+       "ratio": 2,
+       "w": 1104,
+       "h": 1472
+      },
+      {
+       "ratio": 4,
+       "w": 1472,
+       "h": 1104
+      },
+      {
+       "ratio": 6,
+       "w": 1056,
+       "h": 1584
+      },
+      {
+       "ratio": 7,
+       "w": 1584,
+       "h": 1056
+      },
+      {
+       "ratio": 9,
+       "w": 1152,
+       "h": 1440
+      },
+      {
+       "ratio": 10,
+       "w": 1440,
+       "h": 1152
+      },
+      {
+       "ratio": 13,
+       "w": 864,
+       "h": 2016
+      },
+      {
+       "ratio": 8,
+       "w": 2016,
+       "h": 864
+      },
+      {
+       "ratio": 14,
+       "w": 752,
+       "h": 2256
+      },
+      {
+       "ratio": 15,
+       "w": 2256,
+       "h": 752
+      }
+     ]
+    },
+    "2k": {
+     "name": "高清 2K",
+     "sizes": [
+      {
+       "ratio": 1,
+       "w": 2048,
+       "h": 2048
+      },
+      {
+       "ratio": 11,
+       "w": 1440,
+       "h": 2880
+      },
+      {
+       "ratio": 12,
+       "w": 2880,
+       "h": 1440
+      },
+      {
+       "ratio": 5,
+       "w": 1440,
+       "h": 2560
+      },
+      {
+       "ratio": 3,
+       "w": 2560,
+       "h": 1440
+      },
+      {
+       "ratio": 2,
+       "w": 1728,
+       "h": 2304
+      },
+      {
+       "ratio": 4,
+       "w": 2304,
+       "h": 1728
+      },
+      {
+       "ratio": 6,
+       "w": 1664,
+       "h": 2496
+      },
+      {
+       "ratio": 7,
+       "w": 2496,
+       "h": 1664
+      },
+      {
+       "ratio": 9,
+       "w": 1792,
+       "h": 2240
+      },
+      {
+       "ratio": 10,
+       "w": 2240,
+       "h": 1792
+      },
+      {
+       "ratio": 13,
+       "w": 1296,
+       "h": 3024
+      },
+      {
+       "ratio": 8,
+       "w": 3024,
+       "h": 1296
+      },
+      {
+       "ratio": 14,
+       "w": 1168,
+       "h": 3504
+      },
+      {
+       "ratio": 15,
+       "w": 3504,
+       "h": 1168
+      }
+     ]
+    },
+    "4k": {
+     "name": "超清（4K）",
+     "sizes": [
+      {
+       "ratio": 1,
+       "w": 2880,
+       "h": 2880
+      },
+      {
+       "ratio": 11,
+       "w": 1920,
+       "h": 3840
+      },
+      {
+       "ratio": 12,
+       "w": 3840,
+       "h": 1920
+      },
+      {
+       "ratio": 5,
+       "w": 2160,
+       "h": 3840
+      },
+      {
+       "ratio": 3,
+       "w": 3840,
+       "h": 2160
+      },
+      {
+       "ratio": 2,
+       "w": 2448,
+       "h": 3264
+      },
+      {
+       "ratio": 4,
+       "w": 3264,
+       "h": 2448
+      },
+      {
+       "ratio": 6,
+       "w": 2336,
+       "h": 3504
+      },
+      {
+       "ratio": 7,
+       "w": 3504,
+       "h": 2336
+      },
+      {
+       "ratio": 9,
+       "w": 2560,
+       "h": 3200
+      },
+      {
+       "ratio": 10,
+       "w": 3200,
+       "h": 2560
+      },
+      {
+       "ratio": 13,
+       "w": 1632,
+       "h": 3808
+      },
+      {
+       "ratio": 8,
+       "w": 3808,
+       "h": 1632
+      },
+      {
+       "ratio": 14,
+       "w": 1280,
+       "h": 3840
+      },
+      {
+       "ratio": 15,
+       "w": 3840,
+       "h": 1280
+      }
+     ]
+    }
+   },
+   "prices": {
+    "t2i": {
+     "default": 1,
+     "1k": 1,
+     "2k": 1,
+     "4k": 1
+    },
+    "i2i": {
+     "default": 1,
+     "1k": 1,
+     "2k": 1,
+     "4k": 1
+    }
+   },
+   "max_images": 16,
+   "max_prompt_length": 7000
+  },
+  {
+   "key": "jm_image_model_lib_s",
+   "name": "图片模型 Image 2.5 Pro",
+   "tip": "Beta，精细可控，专业精品图像创作",
+   "new": true,
+   "feats": [
+    "new_model",
+    "default_scene",
+    "disable_choose_high_width",
+    "t2i",
+    "byte_edit",
+    "refuse_image",
+    "byte_edit_with_custom_ratio",
+    "byte_edit_with_empty_prompt",
+    "byte_edit_2k",
+    "support_subject"
+   ],
+   "counts": [
+    1
+   ],
+   "default_count": 1,
+   "resolutions": {
+    "1k": {
+     "name": "标清 1K",
+     "sizes": [
+      {
+       "ratio": 1,
+       "w": 1328,
+       "h": 1328
+      },
+      {
+       "ratio": 11,
+       "w": 928,
+       "h": 1856
+      },
+      {
+       "ratio": 12,
+       "w": 1856,
+       "h": 928
+      },
+      {
+       "ratio": 5,
+       "w": 864,
+       "h": 1536
+      },
+      {
+       "ratio": 3,
+       "w": 1536,
+       "h": 864
+      },
+      {
+       "ratio": 2,
+       "w": 1104,
+       "h": 1472
+      },
+      {
+       "ratio": 4,
+       "w": 1472,
+       "h": 1104
+      },
+      {
+       "ratio": 6,
+       "w": 1056,
+       "h": 1584
+      },
+      {
+       "ratio": 7,
+       "w": 1584,
+       "h": 1056
+      },
+      {
+       "ratio": 9,
+       "w": 1152,
+       "h": 1440
+      },
+      {
+       "ratio": 10,
+       "w": 1440,
+       "h": 1152
+      },
+      {
+       "ratio": 13,
+       "w": 864,
+       "h": 2016
+      },
+      {
+       "ratio": 8,
+       "w": 2016,
+       "h": 864
+      },
+      {
+       "ratio": 14,
+       "w": 752,
+       "h": 2256
+      },
+      {
+       "ratio": 15,
+       "w": 2256,
+       "h": 752
+      }
+     ]
+    },
+    "2k": {
+     "name": "高清 2K",
+     "sizes": [
+      {
+       "ratio": 1,
+       "w": 2048,
+       "h": 2048
+      },
+      {
+       "ratio": 11,
+       "w": 1440,
+       "h": 2880
+      },
+      {
+       "ratio": 12,
+       "w": 2880,
+       "h": 1440
+      },
+      {
+       "ratio": 5,
+       "w": 1440,
+       "h": 2560
+      },
+      {
+       "ratio": 3,
+       "w": 2560,
+       "h": 1440
+      },
+      {
+       "ratio": 2,
+       "w": 1728,
+       "h": 2304
+      },
+      {
+       "ratio": 4,
+       "w": 2304,
+       "h": 1728
+      },
+      {
+       "ratio": 6,
+       "w": 1664,
+       "h": 2496
+      },
+      {
+       "ratio": 7,
+       "w": 2496,
+       "h": 1664
+      },
+      {
+       "ratio": 9,
+       "w": 1792,
+       "h": 2240
+      },
+      {
+       "ratio": 10,
+       "w": 2240,
+       "h": 1792
+      },
+      {
+       "ratio": 13,
+       "w": 1296,
+       "h": 3024
+      },
+      {
+       "ratio": 8,
+       "w": 3024,
+       "h": 1296
+      },
+      {
+       "ratio": 14,
+       "w": 1168,
+       "h": 3504
+      },
+      {
+       "ratio": 15,
+       "w": 3504,
+       "h": 1168
+      }
+     ]
+    },
+    "4k": {
+     "name": "超清（4K）",
+     "sizes": [
+      {
+       "ratio": 1,
+       "w": 2880,
+       "h": 2880
+      },
+      {
+       "ratio": 11,
+       "w": 1920,
+       "h": 3840
+      },
+      {
+       "ratio": 12,
+       "w": 3840,
+       "h": 1920
+      },
+      {
+       "ratio": 5,
+       "w": 2160,
+       "h": 3840
+      },
+      {
+       "ratio": 3,
+       "w": 3840,
+       "h": 2160
+      },
+      {
+       "ratio": 2,
+       "w": 2448,
+       "h": 3264
+      },
+      {
+       "ratio": 4,
+       "w": 3264,
+       "h": 2448
+      },
+      {
+       "ratio": 6,
+       "w": 2336,
+       "h": 3504
+      },
+      {
+       "ratio": 7,
+       "w": 3504,
+       "h": 2336
+      },
+      {
+       "ratio": 9,
+       "w": 2560,
+       "h": 3200
+      },
+      {
+       "ratio": 10,
+       "w": 3200,
+       "h": 2560
+      },
+      {
+       "ratio": 13,
+       "w": 1632,
+       "h": 3808
+      },
+      {
+       "ratio": 8,
+       "w": 3808,
+       "h": 1632
+      },
+      {
+       "ratio": 14,
+       "w": 1280,
+       "h": 3840
+      },
+      {
+       "ratio": 15,
+       "w": 3840,
+       "h": 1280
+      }
+     ]
+    }
+   },
+   "prices": {
+    "t2i": {
+     "default": 1,
+     "1k": 1,
+     "2k": 1,
+     "4k": 1
+    },
+    "i2i": {
+     "default": 1,
+     "1k": 1,
+     "2k": 1,
+     "4k": 1
+    }
+   },
+   "max_images": 16,
+   "max_prompt_length": 7000
+  },
+  {
+   "key": "jm_image_model_oa_it",
+   "name": "图片模型 Image 2",
+   "tip": "Beta，高质量图像生成与精准编辑",
+   "new": true,
+   "feats": [
+    "new_model",
+    "default_scene",
+    "t2i",
+    "byte_edit",
+    "simple_image",
+    "disable_choose_high_width",
+    "byte_edit_with_empty_prompt",
+    "byte_edit_with_custom_ratio",
+    "refuse_image",
+    "per_piece",
+    "support_subject"
+   ],
+   "counts": [
+    1
+   ],
+   "default_count": 1,
+   "resolutions": {
+    "1k": {
+     "name": "标清 1K",
+     "sizes": [
+      {
+       "ratio": 1,
+       "w": 1328,
+       "h": 1328
+      },
+      {
+       "ratio": 11,
+       "w": 928,
+       "h": 1856
+      },
+      {
+       "ratio": 12,
+       "w": 1856,
+       "h": 928
+      },
+      {
+       "ratio": 5,
+       "w": 864,
+       "h": 1536
+      },
+      {
+       "ratio": 3,
+       "w": 1536,
+       "h": 864
+      },
+      {
+       "ratio": 2,
+       "w": 1104,
+       "h": 1472
+      },
+      {
+       "ratio": 4,
+       "w": 1472,
+       "h": 1104
+      },
+      {
+       "ratio": 6,
+       "w": 1056,
+       "h": 1584
+      },
+      {
+       "ratio": 7,
+       "w": 1584,
+       "h": 1056
+      },
+      {
+       "ratio": 9,
+       "w": 1152,
+       "h": 1440
+      },
+      {
+       "ratio": 10,
+       "w": 1440,
+       "h": 1152
+      },
+      {
+       "ratio": 13,
+       "w": 864,
+       "h": 2016
+      },
+      {
+       "ratio": 8,
+       "w": 2016,
+       "h": 864
+      },
+      {
+       "ratio": 14,
+       "w": 752,
+       "h": 2256
+      },
+      {
+       "ratio": 15,
+       "w": 2256,
+       "h": 752
+      }
+     ]
+    },
+    "2k": {
+     "name": "高清 2K",
+     "sizes": [
+      {
+       "ratio": 1,
+       "w": 2048,
+       "h": 2048
+      },
+      {
+       "ratio": 11,
+       "w": 1440,
+       "h": 2880
+      },
+      {
+       "ratio": 12,
+       "w": 2880,
+       "h": 1440
+      },
+      {
+       "ratio": 5,
+       "w": 1440,
+       "h": 2560
+      },
+      {
+       "ratio": 3,
+       "w": 2560,
+       "h": 1440
+      },
+      {
+       "ratio": 2,
+       "w": 1728,
+       "h": 2304
+      },
+      {
+       "ratio": 4,
+       "w": 2304,
+       "h": 1728
+      },
+      {
+       "ratio": 6,
+       "w": 1664,
+       "h": 2496
+      },
+      {
+       "ratio": 7,
+       "w": 2496,
+       "h": 1664
+      },
+      {
+       "ratio": 9,
+       "w": 1792,
+       "h": 2240
+      },
+      {
+       "ratio": 10,
+       "w": 2240,
+       "h": 1792
+      },
+      {
+       "ratio": 13,
+       "w": 1296,
+       "h": 3024
+      },
+      {
+       "ratio": 8,
+       "w": 3024,
+       "h": 1296
+      },
+      {
+       "ratio": 14,
+       "w": 1168,
+       "h": 3504
+      },
+      {
+       "ratio": 15,
+       "w": 3504,
+       "h": 1168
+      }
+     ]
+    },
+    "4k": {
+     "name": "超清（4K）",
+     "sizes": [
+      {
+       "ratio": 1,
+       "w": 2880,
+       "h": 2880
+      },
+      {
+       "ratio": 11,
+       "w": 1920,
+       "h": 3840
+      },
+      {
+       "ratio": 12,
+       "w": 3840,
+       "h": 1920
+      },
+      {
+       "ratio": 5,
+       "w": 2160,
+       "h": 3840
+      },
+      {
+       "ratio": 3,
+       "w": 3840,
+       "h": 2160
+      },
+      {
+       "ratio": 2,
+       "w": 2448,
+       "h": 3264
+      },
+      {
+       "ratio": 4,
+       "w": 3264,
+       "h": 2448
+      },
+      {
+       "ratio": 6,
+       "w": 2336,
+       "h": 3504
+      },
+      {
+       "ratio": 7,
+       "w": 3504,
+       "h": 2336
+      },
+      {
+       "ratio": 9,
+       "w": 2560,
+       "h": 3200
+      },
+      {
+       "ratio": 10,
+       "w": 3200,
+       "h": 2560
+      },
+      {
+       "ratio": 13,
+       "w": 1632,
+       "h": 3808
+      },
+      {
+       "ratio": 8,
+       "w": 3808,
+       "h": 1632
+      },
+      {
+       "ratio": 14,
+       "w": 1280,
+       "h": 3840
+      },
+      {
+       "ratio": 15,
+       "w": 3840,
+       "h": 1280
+      }
+     ]
+    }
+   },
+   "prices": {
+    "t2i": {
+     "default": 1,
+     "1k": 1,
+     "2k": 1,
+     "4k": 1
+    },
+    "i2i": {
+     "default": 1,
+     "1k": 1,
+     "2k": 1,
+     "4k": 1
+    }
+   },
+   "max_images": 16,
+   "max_prompt_length": 7000
+  },
+  {
+   "key": "jm_image_model_gg_bp_21",
+   "name": "图片模型 N-2.1",
+   "tip": "Beta，在视觉质量、提示遵循度和角色一致性实现了显著改进",
+   "new": true,
+   "feats": [
+    "new_model",
+    "default_scene",
+    "t2i",
+    "byte_edit",
+    "simple_image",
+    "refuse_image",
+    "byte_edit_with_empty_prompt",
+    "byte_edit_with_custom_ratio",
+    "gemini",
+    "per_piece",
+    "support_subject"
+   ],
+   "counts": [
+    1,
+    2,
+    3,
+    4
+   ],
+   "default_count": 2,
+   "resolutions": {
+    "1k": {
+     "name": "标清 1K",
+     "sizes": [
+      {
+       "ratio": 1,
+       "w": 1024,
+       "h": 1024
+      },
+      {
+       "ratio": 2,
+       "w": 768,
+       "h": 1024
+      },
+      {
+       "ratio": 3,
+       "w": 1024,
+       "h": 576
+      },
+      {
+       "ratio": 4,
+       "w": 1024,
+       "h": 768
+      },
+      {
+       "ratio": 5,
+       "w": 576,
+       "h": 1024
+      },
+      {
+       "ratio": 6,
+       "w": 682,
+       "h": 1024
+      },
+      {
+       "ratio": 7,
+       "w": 1024,
+       "h": 682
+      },
+      {
+       "ratio": 8,
+       "w": 1195,
+       "h": 512
+      }
+     ]
+    },
+    "2k": {
+     "name": "高清 2K",
+     "sizes": [
+      {
+       "ratio": 1,
+       "w": 2048,
+       "h": 2048
+      },
+      {
+       "ratio": 2,
+       "w": 1728,
+       "h": 2304
+      },
+      {
+       "ratio": 3,
+       "w": 2560,
+       "h": 1440
+      },
+      {
+       "ratio": 4,
+       "w": 2304,
+       "h": 1728
+      },
+      {
+       "ratio": 5,
+       "w": 1440,
+       "h": 2560
+      },
+      {
+       "ratio": 6,
+       "w": 1664,
+       "h": 2496
+      },
+      {
+       "ratio": 7,
+       "w": 2496,
+       "h": 1664
+      },
+      {
+       "ratio": 8,
+       "w": 3024,
+       "h": 1296
+      }
+     ]
+    },
+    "4k": {
+     "name": "超清（4K）",
+     "sizes": [
+      {
+       "ratio": 1,
+       "w": 4096,
+       "h": 4096
+      },
+      {
+       "ratio": 2,
+       "w": 3520,
+       "h": 4693
+      },
+      {
+       "ratio": 3,
+       "w": 5404,
+       "h": 3040
+      },
+      {
+       "ratio": 4,
+       "w": 4693,
+       "h": 3520
+      },
+      {
+       "ratio": 5,
+       "w": 3040,
+       "h": 5404
+      },
+      {
+       "ratio": 6,
+       "w": 3328,
+       "h": 4992
+      },
+      {
+       "ratio": 7,
+       "w": 4992,
+       "h": 3328
+      },
+      {
+       "ratio": 8,
+       "w": 6197,
+       "h": 2656
+      }
+     ]
+    }
+   },
+   "prices": {
+    "t2i": {
+     "default": 1,
+     "1k": 1,
+     "2k": 1,
+     "4k": 1
+    },
+    "i2i": {
+     "default": 1,
+     "1k": 1,
+     "2k": 1,
+     "4k": 1
+    }
+   },
+   "max_images": 14,
+   "max_prompt_length": 5000
+  },
+  {
+   "key": "jm_image_model_gg_bp",
+   "name": "图片模型 N-Pro",
+   "tip": "Beta，专业级视觉创作，精准呈现文字与复杂信息",
+   "new": true,
+   "feats": [
+    "new_model",
+    "default_scene",
+    "t2i",
+    "byte_edit",
+    "simple_image",
+    "refuse_image",
+    "byte_edit_with_empty_prompt",
+    "byte_edit_with_custom_ratio",
+    "gemini",
+    "per_piece",
+    "support_subject"
+   ],
+   "counts": [
+    1,
+    2,
+    3,
+    4
+   ],
+   "default_count": 1,
+   "resolutions": {
+    "1k": {
+     "name": "标清 1K",
+     "sizes": [
+      {
+       "ratio": 1,
+       "w": 1024,
+       "h": 1024
+      },
+      {
+       "ratio": 2,
+       "w": 768,
+       "h": 1024
+      },
+      {
+       "ratio": 3,
+       "w": 1024,
+       "h": 576
+      },
+      {
+       "ratio": 4,
+       "w": 1024,
+       "h": 768
+      },
+      {
+       "ratio": 5,
+       "w": 576,
+       "h": 1024
+      },
+      {
+       "ratio": 6,
+       "w": 682,
+       "h": 1024
+      },
+      {
+       "ratio": 7,
+       "w": 1024,
+       "h": 682
+      },
+      {
+       "ratio": 8,
+       "w": 1195,
+       "h": 512
+      }
+     ]
+    },
+    "2k": {
+     "name": "高清 2K",
+     "sizes": [
+      {
+       "ratio": 1,
+       "w": 2048,
+       "h": 2048
+      },
+      {
+       "ratio": 2,
+       "w": 1728,
+       "h": 2304
+      },
+      {
+       "ratio": 3,
+       "w": 2560,
+       "h": 1440
+      },
+      {
+       "ratio": 4,
+       "w": 2304,
+       "h": 1728
+      },
+      {
+       "ratio": 5,
+       "w": 1440,
+       "h": 2560
+      },
+      {
+       "ratio": 6,
+       "w": 1664,
+       "h": 2496
+      },
+      {
+       "ratio": 7,
+       "w": 2496,
+       "h": 1664
+      },
+      {
+       "ratio": 8,
+       "w": 3024,
+       "h": 1296
+      }
+     ]
+    },
+    "4k": {
+     "name": "超清（4K）",
+     "sizes": [
+      {
+       "ratio": 1,
+       "w": 4096,
+       "h": 4096
+      },
+      {
+       "ratio": 2,
+       "w": 3520,
+       "h": 4693
+      },
+      {
+       "ratio": 3,
+       "w": 5404,
+       "h": 3040
+      },
+      {
+       "ratio": 4,
+       "w": 4693,
+       "h": 3520
+      },
+      {
+       "ratio": 5,
+       "w": 3040,
+       "h": 5404
+      },
+      {
+       "ratio": 6,
+       "w": 3328,
+       "h": 4992
+      },
+      {
+       "ratio": 7,
+       "w": 4992,
+       "h": 3328
+      },
+      {
+       "ratio": 8,
+       "w": 6197,
+       "h": 2656
+      }
+     ]
+    }
+   },
+   "prices": {
+    "t2i": {
+     "default": 1,
+     "1k": 1,
+     "2k": 1,
+     "4k": 1
+    },
+    "i2i": {
+     "default": 1,
+     "1k": 1,
+     "2k": 1,
+     "4k": 1
+    }
+   },
+   "max_images": 14,
+   "max_prompt_length": 5000
+  },
+  {
+   "key": "jm_image_model_yc_mj82",
+   "name": "图片美学模型 V8.2",
+   "tip": "专注美学创作，生成高美感、艺术感图片",
+   "new": false,
+   "feats": [
+    "default_scene",
+    "t2i",
+    "byte_edit",
+    "simple_image",
+    "hide_custom_ratio",
+    "support_subject",
+    "per_piece",
+    "refuse_image",
+    "byte_edit_2k",
+    "byte_edit_with_custom_ratio"
+   ],
+   "counts": [
+    4
+   ],
+   "default_count": 4,
+   "resolutions": {
+    "1k": {
+     "name": "标清 1K",
+     "sizes": [
+      {
+       "ratio": 1,
+       "w": 1024,
+       "h": 1024
+      },
+      {
+       "ratio": 11,
+       "w": 724,
+       "h": 1448
+      },
+      {
+       "ratio": 12,
+       "w": 1448,
+       "h": 724
+      },
+      {
+       "ratio": 5,
+       "w": 576,
+       "h": 1024
+      },
+      {
+       "ratio": 3,
+       "w": 1024,
+       "h": 576
+      },
+      {
+       "ratio": 2,
+       "w": 768,
+       "h": 1024
+      },
+      {
+       "ratio": 4,
+       "w": 1024,
+       "h": 768
+      },
+      {
+       "ratio": 6,
+       "w": 682,
+       "h": 1024
+      },
+      {
+       "ratio": 7,
+       "w": 1024,
+       "h": 682
+      },
+      {
+       "ratio": 9,
+       "w": 912,
+       "h": 1140
+      },
+      {
+       "ratio": 10,
+       "w": 1140,
+       "h": 912
+      },
+      {
+       "ratio": 13,
+       "w": 512,
+       "h": 1195
+      },
+      {
+       "ratio": 8,
+       "w": 1195,
+       "h": 512
+      },
+      {
+       "ratio": 14,
+       "w": 591,
+       "h": 1773
+      },
+      {
+       "ratio": 15,
+       "w": 1773,
+       "h": 591
+      }
+     ]
+    },
+    "2k": {
+     "name": "高清 2K",
+     "sizes": [
+      {
+       "ratio": 1,
+       "w": 2048,
+       "h": 2048
+      },
+      {
+       "ratio": 11,
+       "w": 1448,
+       "h": 2896
+      },
+      {
+       "ratio": 12,
+       "w": 2896,
+       "h": 1448
+      },
+      {
+       "ratio": 5,
+       "w": 1440,
+       "h": 2560
+      },
+      {
+       "ratio": 3,
+       "w": 2560,
+       "h": 1440
+      },
+      {
+       "ratio": 2,
+       "w": 1728,
+       "h": 2304
+      },
+      {
+       "ratio": 4,
+       "w": 2304,
+       "h": 1728
+      },
+      {
+       "ratio": 6,
+       "w": 1664,
+       "h": 2496
+      },
+      {
+       "ratio": 7,
+       "w": 2496,
+       "h": 1664
+      },
+      {
+       "ratio": 9,
+       "w": 1828,
+       "h": 2285
+      },
+      {
+       "ratio": 10,
+       "w": 2285,
+       "h": 1828
+      },
+      {
+       "ratio": 13,
+       "w": 1296,
+       "h": 3024
+      },
+      {
+       "ratio": 8,
+       "w": 3024,
+       "h": 1296
+      },
+      {
+       "ratio": 14,
+       "w": 1182,
+       "h": 3546
+      },
+      {
+       "ratio": 15,
+       "w": 3546,
+       "h": 1182
+      }
+     ]
+    }
+   },
+   "prices": {
+    "t2i": {
+     "default": 1,
+     "2k": 1
+    },
+    "i2i": {
+     "default": 1,
+     "2k": 1
+    }
+   },
+   "max_images": 20,
+   "max_prompt_length": 1024
+  },
+  {
+   "key": "high_aes_general_v50_ultra",
+   "name": "Seedream 5.0 Aurora",
+   "tip": "新增搜索、编码与反思能力，重点优化多文字海报等复杂场景",
+   "new": true,
+   "feats": [
+    "default_scene",
+    "t2i",
+    "byte_edit",
+    "byte_edit_2k",
+    "refuse_image",
+    "smart_scale",
+    "per_piece",
+    "byte_edit_with_empty_prompt",
+    "byte_edit_with_custom_ratio",
+    "etta",
+    "support_subject",
+    "new_model",
+    "image_display_one_by_one"
+   ],
+   "counts": [
+    1,
+    2,
+    3,
+    4
+   ],
+   "default_count": 4,
+   "resolutions": {
+    "2k": {
+     "name": "高清 2K",
+     "sizes": [
+      {
+       "ratio": 1,
+       "w": 2048,
+       "h": 2048
+      },
+      {
+       "ratio": 2,
+       "w": 1728,
+       "h": 2304
+      },
+      {
+       "ratio": 3,
+       "w": 2560,
+       "h": 1440
+      },
+      {
+       "ratio": 4,
+       "w": 2304,
+       "h": 1728
+      },
+      {
+       "ratio": 5,
+       "w": 1440,
+       "h": 2560
+      },
+      {
+       "ratio": 6,
+       "w": 1664,
+       "h": 2496
+      },
+      {
+       "ratio": 7,
+       "w": 2496,
+       "h": 1664
+      },
+      {
+       "ratio": 8,
+       "w": 3024,
+       "h": 1296
+      }
+     ]
+    }
+   },
+   "prices": {
+    "t2i": {
+     "default": 1,
+     "2k": 1
+    },
+    "i2i": {
+     "default": 1,
+     "2k": 1
+    }
+   },
+   "max_images": 10,
+   "max_prompt_length": 2000
+  },
+  {
+   "key": "high_aes_general_v50_surge",
+   "name": "Seedream 5.0 Surge",
+   "tip": "重点优化了科普、教学、营销等复杂场景的生图效果",
+   "new": true,
+   "feats": [
+    "default_scene",
+    "t2i",
+    "byte_edit",
+    "byte_edit_2k",
+    "refuse_image",
+    "smart_scale",
+    "per_piece",
+    "byte_edit_with_empty_prompt",
+    "byte_edit_with_custom_ratio",
+    "etta",
+    "support_subject",
+    "new_model",
+    "image_display_one_by_one"
+   ],
+   "counts": [
+    1,
+    2,
+    3,
+    4
+   ],
+   "default_count": 4,
+   "resolutions": {
+    "2k": {
+     "name": "高清 2K",
+     "sizes": [
+      {
+       "ratio": 1,
+       "w": 2048,
+       "h": 2048
+      },
+      {
+       "ratio": 2,
+       "w": 1728,
+       "h": 2304
+      },
+      {
+       "ratio": 3,
+       "w": 2560,
+       "h": 1440
+      },
+      {
+       "ratio": 4,
+       "w": 2304,
+       "h": 1728
+      },
+      {
+       "ratio": 5,
+       "w": 1440,
+       "h": 2560
+      },
+      {
+       "ratio": 6,
+       "w": 1664,
+       "h": 2496
+      },
+      {
+       "ratio": 7,
+       "w": 2496,
+       "h": 1664
+      },
+      {
+       "ratio": 8,
+       "w": 3024,
+       "h": 1296
+      }
+     ]
+    }
+   },
+   "prices": {
+    "t2i": {
+     "default": 1,
+     "2k": 1
+    },
+    "i2i": {
+     "default": 1,
+     "2k": 1
+    }
+   },
+   "max_images": 10,
+   "max_prompt_length": 2000
+  },
+  {
+   "key": "high_aes_general_v50_flash",
+   "name": "Seedream 5.0 Flash",
+   "tip": "轻量化版 Seedream 5.0 Pro，更快更便宜",
+   "new": true,
+   "feats": [
+    "new_model",
+    "default_scene",
+    "t2i",
+    "byte_edit",
+    "byte_edit_2k",
+    "byte_edit_hr",
+    "refuse_image",
+    "smart_scale",
+    "per_piece",
+    "byte_edit_with_empty_prompt",
+    "byte_edit_with_custom_ratio",
+    "etta",
+    "support_subject"
+   ],
+   "counts": [
+    1,
+    2,
+    3,
+    4
+   ],
+   "default_count": 4,
+   "resolutions": {
+    "1.5k": {
+     "name": "标清 1.5K",
+     "sizes": [
+      {
+       "ratio": 1,
+       "w": 1536,
+       "h": 1536
+      },
+      {
+       "ratio": 2,
+       "w": 1296,
+       "h": 1728
+      },
+      {
+       "ratio": 3,
+       "w": 1920,
+       "h": 1080
+      },
+      {
+       "ratio": 4,
+       "w": 1728,
+       "h": 1296
+      },
+      {
+       "ratio": 5,
+       "w": 1080,
+       "h": 1920
+      },
+      {
+       "ratio": 6,
+       "w": 1248,
+       "h": 1872
+      },
+      {
+       "ratio": 7,
+       "w": 1872,
+       "h": 1248
+      },
+      {
+       "ratio": 8,
+       "w": 2268,
+       "h": 972
+      }
+     ]
+    },
+    "2k": {
+     "name": "高清 2K",
+     "sizes": [
+      {
+       "ratio": 1,
+       "w": 2048,
+       "h": 2048
+      },
+      {
+       "ratio": 2,
+       "w": 1728,
+       "h": 2304
+      },
+      {
+       "ratio": 3,
+       "w": 2560,
+       "h": 1440
+      },
+      {
+       "ratio": 4,
+       "w": 2304,
+       "h": 1728
+      },
+      {
+       "ratio": 5,
+       "w": 1440,
+       "h": 2560
+      },
+      {
+       "ratio": 6,
+       "w": 1664,
+       "h": 2496
+      },
+      {
+       "ratio": 7,
+       "w": 2496,
+       "h": 1664
+      },
+      {
+       "ratio": 8,
+       "w": 3024,
+       "h": 1296
+      }
+     ]
+    },
+    "4k": {
+     "name": "超清（4K）",
+     "sizes": [
+      {
+       "ratio": 1,
+       "w": 4096,
+       "h": 4096
+      },
+      {
+       "ratio": 2,
+       "w": 3520,
+       "h": 4693
+      },
+      {
+       "ratio": 3,
+       "w": 5404,
+       "h": 3040
+      },
+      {
+       "ratio": 4,
+       "w": 4693,
+       "h": 3520
+      },
+      {
+       "ratio": 5,
+       "w": 3040,
+       "h": 5404
+      },
+      {
+       "ratio": 6,
+       "w": 3328,
+       "h": 4992
+      },
+      {
+       "ratio": 7,
+       "w": 4992,
+       "h": 3328
+      },
+      {
+       "ratio": 8,
+       "w": 6197,
+       "h": 2656
+      }
+     ]
+    }
+   },
+   "prices": {
+    "t2i": {
+     "default": 1,
+     "1.5k": 1,
+     "2k": 1,
+     "4k": 1
+    },
+    "i2i": {
+     "default": 1,
+     "1.5k": 1,
+     "2k": 1,
+     "4k": 1
+    }
+   },
+   "max_images": 10,
+   "max_prompt_length": 5000
+  },
+  {
+   "key": "high_aes_general_v50",
+   "name": "Seedream 5.0 Lite",
+   "tip": "指令响应更精准，生成效果更智能",
+   "new": false,
+   "feats": [
+    "default_scene",
+    "t2i",
+    "byte_edit",
+    "refuse_image",
+    "smart_scale",
+    "per_piece",
+    "think_then_draw",
+    "byte_edit_with_empty_prompt",
+    "byte_edit_with_custom_ratio",
+    "etta",
+    "support_subject"
+   ],
+   "counts": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+   ],
+   "default_count": 4,
+   "resolutions": {
+    "2k": {
+     "name": "高清 2K",
+     "sizes": [
+      {
+       "ratio": 1,
+       "w": 2048,
+       "h": 2048
+      },
+      {
+       "ratio": 2,
+       "w": 1728,
+       "h": 2304
+      },
+      {
+       "ratio": 3,
+       "w": 2560,
+       "h": 1440
+      },
+      {
+       "ratio": 4,
+       "w": 2304,
+       "h": 1728
+      },
+      {
+       "ratio": 5,
+       "w": 1440,
+       "h": 2560
+      },
+      {
+       "ratio": 6,
+       "w": 1664,
+       "h": 2496
+      },
+      {
+       "ratio": 7,
+       "w": 2496,
+       "h": 1664
+      },
+      {
+       "ratio": 8,
+       "w": 3024,
+       "h": 1296
+      }
+     ]
+    },
+    "4k": {
+     "name": "超清（4K）",
+     "sizes": [
+      {
+       "ratio": 1,
+       "w": 4096,
+       "h": 4096
+      },
+      {
+       "ratio": 2,
+       "w": 3520,
+       "h": 4693
+      },
+      {
+       "ratio": 3,
+       "w": 5404,
+       "h": 3040
+      },
+      {
+       "ratio": 4,
+       "w": 4693,
+       "h": 3520
+      },
+      {
+       "ratio": 5,
+       "w": 3040,
+       "h": 5404
+      },
+      {
+       "ratio": 6,
+       "w": 3328,
+       "h": 4992
+      },
+      {
+       "ratio": 7,
+       "w": 4992,
+       "h": 3328
+      },
+      {
+       "ratio": 8,
+       "w": 6197,
+       "h": 2656
+      }
+     ]
+    }
+   },
+   "prices": {
+    "t2i": {
+     "default": 1,
+     "4k": 1
+    },
+    "i2i": {
+     "default": 1,
+     "4k": 1
+    }
+   },
+   "max_images": null,
+   "max_prompt_length": 2000
+  },
+  {
+   "key": "jm_image_model_anycook",
+   "name": "Anycook 1.0",
+   "tip": "更适合场景设计和滤镜添加",
+   "new": true,
+   "feats": [
+    "new_model",
+    "support_subject",
+    "default_scene",
+    "t2i",
+    "byte_edit",
+    "byte_edit_2k",
+    "byte_edit_4k",
+    "byte_edit_with_custom_ratio",
+    "per_piece",
+    "refuse_image",
+    "byte_edit_with_empty_prompt"
+   ],
+   "counts": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+   ],
+   "default_count": 4,
+   "resolutions": {
+    "2k": {
+     "name": "高清 2K",
+     "sizes": [
+      {
+       "ratio": 1,
+       "w": 2048,
+       "h": 2048
+      },
+      {
+       "ratio": 2,
+       "w": 1728,
+       "h": 2304
+      },
+      {
+       "ratio": 3,
+       "w": 2560,
+       "h": 1440
+      },
+      {
+       "ratio": 4,
+       "w": 2304,
+       "h": 1728
+      },
+      {
+       "ratio": 5,
+       "w": 1440,
+       "h": 2560
+      },
+      {
+       "ratio": 6,
+       "w": 1664,
+       "h": 2496
+      },
+      {
+       "ratio": 7,
+       "w": 2496,
+       "h": 1664
+      },
+      {
+       "ratio": 8,
+       "w": 3024,
+       "h": 1296
+      }
+     ]
+    },
+    "4k": {
+     "name": "超清（4K）",
+     "sizes": [
+      {
+       "ratio": 1,
+       "w": 4096,
+       "h": 4096
+      },
+      {
+       "ratio": 2,
+       "w": 3520,
+       "h": 4693
+      },
+      {
+       "ratio": 3,
+       "w": 5404,
+       "h": 3040
+      },
+      {
+       "ratio": 4,
+       "w": 4693,
+       "h": 3520
+      },
+      {
+       "ratio": 5,
+       "w": 3040,
+       "h": 5404
+      },
+      {
+       "ratio": 6,
+       "w": 3328,
+       "h": 4992
+      },
+      {
+       "ratio": 7,
+       "w": 4992,
+       "h": 3328
+      },
+      {
+       "ratio": 8,
+       "w": 6197,
+       "h": 2656
+      }
+     ]
+    }
+   },
+   "prices": {
+    "t2i": {
+     "default": 1,
+     "4k": 1
+    },
+    "i2i": {
+     "default": 1,
+     "4k": 1
+    }
+   },
+   "max_images": 4,
+   "max_prompt_length": null
+  },
+  {
+   "key": "high_aes_general_v43",
+   "name": "Seedream 4.7",
+   "tip": "画质全面优化，指令响应能力再次提升",
+   "new": false,
+   "feats": [
+    "default_scene",
+    "t2i",
+    "byte_edit",
+    "refuse_image",
+    "smart_scale",
+    "per_piece",
+    "think_then_draw",
+    "byte_edit_with_empty_prompt",
+    "byte_edit_with_custom_ratio",
+    "etta",
+    "support_subject"
+   ],
+   "counts": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+   ],
+   "default_count": 4,
+   "resolutions": {
+    "2k": {
+     "name": "高清 2K",
+     "sizes": [
+      {
+       "ratio": 1,
+       "w": 2048,
+       "h": 2048
+      },
+      {
+       "ratio": 2,
+       "w": 1728,
+       "h": 2304
+      },
+      {
+       "ratio": 3,
+       "w": 2560,
+       "h": 1440
+      },
+      {
+       "ratio": 4,
+       "w": 2304,
+       "h": 1728
+      },
+      {
+       "ratio": 5,
+       "w": 1440,
+       "h": 2560
+      },
+      {
+       "ratio": 6,
+       "w": 1664,
+       "h": 2496
+      },
+      {
+       "ratio": 7,
+       "w": 2496,
+       "h": 1664
+      },
+      {
+       "ratio": 8,
+       "w": 3024,
+       "h": 1296
+      }
+     ]
+    },
+    "4k": {
+     "name": "超清（4K）",
+     "sizes": [
+      {
+       "ratio": 1,
+       "w": 4096,
+       "h": 4096
+      },
+      {
+       "ratio": 2,
+       "w": 3520,
+       "h": 4693
+      },
+      {
+       "ratio": 3,
+       "w": 5404,
+       "h": 3040
+      },
+      {
+       "ratio": 4,
+       "w": 4693,
+       "h": 3520
+      },
+      {
+       "ratio": 5,
+       "w": 3040,
+       "h": 5404
+      },
+      {
+       "ratio": 6,
+       "w": 3328,
+       "h": 4992
+      },
+      {
+       "ratio": 7,
+       "w": 4992,
+       "h": 3328
+      },
+      {
+       "ratio": 8,
+       "w": 6197,
+       "h": 2656
+      }
+     ]
+    }
+   },
+   "prices": {
+    "t2i": {
+     "default": 1,
+     "4k": 1
+    },
+    "i2i": {
+     "default": 1,
+     "4k": 1
+    }
+   },
+   "max_images": null,
+   "max_prompt_length": 2000
+  },
+  {
+   "key": "high_aes_general_v42",
+   "name": "Seedream 4.6",
+   "tip": "人像一致性保持更好，性价比更高",
+   "new": false,
+   "feats": [
+    "default_scene",
+    "t2i",
+    "byte_edit",
+    "refuse_image",
+    "smart_scale",
+    "per_piece",
+    "think_then_draw",
+    "byte_edit_with_empty_prompt",
+    "byte_edit_with_custom_ratio",
+    "etta",
+    "support_subject"
+   ],
+   "counts": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+   ],
+   "default_count": 4,
+   "resolutions": {
+    "2k": {
+     "name": "高清 2K",
+     "sizes": [
+      {
+       "ratio": 1,
+       "w": 2048,
+       "h": 2048
+      },
+      {
+       "ratio": 2,
+       "w": 1728,
+       "h": 2304
+      },
+      {
+       "ratio": 3,
+       "w": 2560,
+       "h": 1440
+      },
+      {
+       "ratio": 4,
+       "w": 2304,
+       "h": 1728
+      },
+      {
+       "ratio": 5,
+       "w": 1440,
+       "h": 2560
+      },
+      {
+       "ratio": 6,
+       "w": 1664,
+       "h": 2496
+      },
+      {
+       "ratio": 7,
+       "w": 2496,
+       "h": 1664
+      },
+      {
+       "ratio": 8,
+       "w": 3024,
+       "h": 1296
+      }
+     ]
+    },
+    "4k": {
+     "name": "超清（4K）",
+     "sizes": [
+      {
+       "ratio": 1,
+       "w": 4096,
+       "h": 4096
+      },
+      {
+       "ratio": 2,
+       "w": 3520,
+       "h": 4693
+      },
+      {
+       "ratio": 3,
+       "w": 5404,
+       "h": 3040
+      },
+      {
+       "ratio": 4,
+       "w": 4693,
+       "h": 3520
+      },
+      {
+       "ratio": 5,
+       "w": 3040,
+       "h": 5404
+      },
+      {
+       "ratio": 6,
+       "w": 3328,
+       "h": 4992
+      },
+      {
+       "ratio": 7,
+       "w": 4992,
+       "h": 3328
+      },
+      {
+       "ratio": 8,
+       "w": 6197,
+       "h": 2656
+      }
+     ]
+    }
+   },
+   "prices": {
+    "t2i": {
+     "default": 1,
+     "4k": 1
+    },
+    "i2i": {
+     "default": 1,
+     "4k": 1
+    }
+   },
+   "max_images": null,
+   "max_prompt_length": 2000
+  },
+  {
+   "key": "high_aes_general_v40l",
+   "name": "Seedream 4.5",
+   "tip": "强化一致性、风格与图文响应",
+   "new": false,
+   "feats": [
+    "default_scene",
+    "t2i",
+    "byte_edit",
+    "refuse_image",
+    "smart_scale",
+    "per_piece",
+    "think_then_draw",
+    "byte_edit_with_empty_prompt",
+    "byte_edit_with_custom_ratio",
+    "etta",
+    "support_subject"
+   ],
+   "counts": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+   ],
+   "default_count": 4,
+   "resolutions": {
+    "2k": {
+     "name": "高清 2K",
+     "sizes": [
+      {
+       "ratio": 1,
+       "w": 2048,
+       "h": 2048
+      },
+      {
+       "ratio": 2,
+       "w": 1728,
+       "h": 2304
+      },
+      {
+       "ratio": 3,
+       "w": 2560,
+       "h": 1440
+      },
+      {
+       "ratio": 4,
+       "w": 2304,
+       "h": 1728
+      },
+      {
+       "ratio": 5,
+       "w": 1440,
+       "h": 2560
+      },
+      {
+       "ratio": 6,
+       "w": 1664,
+       "h": 2496
+      },
+      {
+       "ratio": 7,
+       "w": 2496,
+       "h": 1664
+      },
+      {
+       "ratio": 8,
+       "w": 3024,
+       "h": 1296
+      }
+     ]
+    },
+    "4k": {
+     "name": "超清（4K）",
+     "sizes": [
+      {
+       "ratio": 1,
+       "w": 4096,
+       "h": 4096
+      },
+      {
+       "ratio": 2,
+       "w": 3520,
+       "h": 4693
+      },
+      {
+       "ratio": 3,
+       "w": 5404,
+       "h": 3040
+      },
+      {
+       "ratio": 4,
+       "w": 4693,
+       "h": 3520
+      },
+      {
+       "ratio": 5,
+       "w": 3040,
+       "h": 5404
+      },
+      {
+       "ratio": 6,
+       "w": 3328,
+       "h": 4992
+      },
+      {
+       "ratio": 7,
+       "w": 4992,
+       "h": 3328
+      },
+      {
+       "ratio": 8,
+       "w": 6197,
+       "h": 2656
+      }
+     ]
+    }
+   },
+   "prices": {
+    "t2i": {
+     "default": 1,
+     "4k": 1
+    },
+    "i2i": {
+     "default": 1,
+     "4k": 1
+    }
+   },
+   "max_images": null,
+   "max_prompt_length": 2000
+  },
+  {
+   "key": "high_aes_general_v41",
+   "name": "Seedream 4.1",
+   "tip": "更专业的创意、美学和一致性保持",
+   "new": false,
+   "feats": [
+    "default_scene",
+    "t2i",
+    "byte_edit",
+    "refuse_image",
+    "smart_scale",
+    "per_piece",
+    "think_then_draw",
+    "byte_edit_with_empty_prompt",
+    "byte_edit_with_custom_ratio",
+    "etta",
+    "support_subject"
+   ],
+   "counts": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+   ],
+   "default_count": 4,
+   "resolutions": {
+    "2k": {
+     "name": "高清 2K",
+     "sizes": [
+      {
+       "ratio": 1,
+       "w": 2048,
+       "h": 2048
+      },
+      {
+       "ratio": 2,
+       "w": 1728,
+       "h": 2304
+      },
+      {
+       "ratio": 3,
+       "w": 2560,
+       "h": 1440
+      },
+      {
+       "ratio": 4,
+       "w": 2304,
+       "h": 1728
+      },
+      {
+       "ratio": 5,
+       "w": 1440,
+       "h": 2560
+      },
+      {
+       "ratio": 6,
+       "w": 1664,
+       "h": 2496
+      },
+      {
+       "ratio": 7,
+       "w": 2496,
+       "h": 1664
+      },
+      {
+       "ratio": 8,
+       "w": 3024,
+       "h": 1296
+      }
+     ]
+    },
+    "4k": {
+     "name": "超清（4K）",
+     "sizes": [
+      {
+       "ratio": 1,
+       "w": 4096,
+       "h": 4096
+      },
+      {
+       "ratio": 2,
+       "w": 3520,
+       "h": 4693
+      },
+      {
+       "ratio": 3,
+       "w": 5404,
+       "h": 3040
+      },
+      {
+       "ratio": 4,
+       "w": 4693,
+       "h": 3520
+      },
+      {
+       "ratio": 5,
+       "w": 3040,
+       "h": 5404
+      },
+      {
+       "ratio": 6,
+       "w": 3328,
+       "h": 4992
+      },
+      {
+       "ratio": 7,
+       "w": 4992,
+       "h": 3328
+      },
+      {
+       "ratio": 8,
+       "w": 6197,
+       "h": 2656
+      }
+     ]
+    }
+   },
+   "prices": {
+    "t2i": {
+     "default": 1,
+     "4k": 1
+    },
+    "i2i": {
+     "default": 1,
+     "4k": 1
+    }
+   },
+   "max_images": null,
+   "max_prompt_length": 2000
+  },
+  {
+   "key": "high_aes_general_v40",
+   "name": "Seedream 4.0",
+   "tip": "支持多参考图、系列组图生成",
+   "new": false,
+   "feats": [
+    "default_scene",
+    "t2i",
+    "byte_edit",
+    "refuse_image",
+    "smart_scale",
+    "per_piece",
+    "think_then_draw",
+    "byte_edit_with_empty_prompt",
+    "byte_edit_with_custom_ratio",
+    "etta",
+    "support_subject"
+   ],
+   "counts": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+   ],
+   "default_count": 4,
+   "resolutions": {
+    "2k": {
+     "name": "高清 2K",
+     "sizes": [
+      {
+       "ratio": 1,
+       "w": 2048,
+       "h": 2048
+      },
+      {
+       "ratio": 2,
+       "w": 1728,
+       "h": 2304
+      },
+      {
+       "ratio": 3,
+       "w": 2560,
+       "h": 1440
+      },
+      {
+       "ratio": 4,
+       "w": 2304,
+       "h": 1728
+      },
+      {
+       "ratio": 5,
+       "w": 1440,
+       "h": 2560
+      },
+      {
+       "ratio": 6,
+       "w": 1664,
+       "h": 2496
+      },
+      {
+       "ratio": 7,
+       "w": 2496,
+       "h": 1664
+      },
+      {
+       "ratio": 8,
+       "w": 3024,
+       "h": 1296
+      }
+     ]
+    },
+    "4k": {
+     "name": "超清（4K）",
+     "sizes": [
+      {
+       "ratio": 1,
+       "w": 4096,
+       "h": 4096
+      },
+      {
+       "ratio": 2,
+       "w": 3520,
+       "h": 4693
+      },
+      {
+       "ratio": 3,
+       "w": 5404,
+       "h": 3040
+      },
+      {
+       "ratio": 4,
+       "w": 4693,
+       "h": 3520
+      },
+      {
+       "ratio": 5,
+       "w": 3040,
+       "h": 5404
+      },
+      {
+       "ratio": 6,
+       "w": 3328,
+       "h": 4992
+      },
+      {
+       "ratio": 7,
+       "w": 4992,
+       "h": 3328
+      },
+      {
+       "ratio": 8,
+       "w": 6197,
+       "h": 2656
+      }
+     ]
+    }
+   },
+   "prices": {
+    "t2i": {
+     "default": 1,
+     "4k": 1
+    },
+    "i2i": {
+     "default": 1,
+     "4k": 1
+    }
+   },
+   "max_images": null,
+   "max_prompt_length": 2000
+  },
+  {
+   "key": "high_aes_general_v30l_art_fangzhou:general_v3.0_18b",
+   "name": "Seedream 3.1",
+   "tip": "丰富的美学多样性，画面更鲜明生动",
+   "new": false,
+   "feats": [
+    "default_scene",
+    "etta",
+    "t2i",
+    "byte_edit",
+    "byte_edit_with_custom_ratio",
+    "byte_edit_with_empty_prompt"
+   ],
+   "counts": [],
+   "default_count": null,
+   "resolutions": {
+    "1k": {
+     "name": "标清 1K",
+     "sizes": [
+      {
+       "ratio": 1,
+       "w": 1328,
+       "h": 1328
+      },
+      {
+       "ratio": 2,
+       "w": 1104,
+       "h": 1472
+      },
+      {
+       "ratio": 3,
+       "w": 1664,
+       "h": 936
+      },
+      {
+       "ratio": 4,
+       "w": 1472,
+       "h": 1104
+      },
+      {
+       "ratio": 5,
+       "w": 936,
+       "h": 1664
+      },
+      {
+       "ratio": 6,
+       "w": 1056,
+       "h": 1584
+      },
+      {
+       "ratio": 7,
+       "w": 1584,
+       "h": 1056
+      },
+      {
+       "ratio": 8,
+       "w": 2016,
+       "h": 864
+      }
+     ]
+    },
+    "2k": {
+     "name": "高清 2K",
+     "sizes": [
+      {
+       "ratio": 1,
+       "w": 2048,
+       "h": 2048
+      },
+      {
+       "ratio": 2,
+       "w": 1728,
+       "h": 2304
+      },
+      {
+       "ratio": 3,
+       "w": 2560,
+       "h": 1440
+      },
+      {
+       "ratio": 4,
+       "w": 2304,
+       "h": 1728
+      },
+      {
+       "ratio": 5,
+       "w": 1440,
+       "h": 2560
+      },
+      {
+       "ratio": 6,
+       "w": 1664,
+       "h": 2496
+      },
+      {
+       "ratio": 7,
+       "w": 2496,
+       "h": 1664
+      },
+      {
+       "ratio": 8,
+       "w": 3024,
+       "h": 1296
+      }
+     ]
+    }
+   },
+   "prices": {
+    "t2i": {
+     "default": 1,
+     "2k": 1
+    },
+    "i2i": {
+     "default": 1
+    }
+   },
+   "max_images": null,
+   "max_prompt_length": 2000
+  },
+  {
+   "key": "high_aes_general_v30l:general_v3.0_18b",
+   "name": "Seedream 3.0",
+   "tip": "影视质感，文字更准，直出2k高清图",
+   "new": false,
+   "feats": [
+    "default_scene",
+    "etta",
+    "t2i",
+    "byte_edit",
+    "byte_edit_with_custom_ratio",
+    "byte_edit_with_empty_prompt"
+   ],
+   "counts": [],
+   "default_count": null,
+   "resolutions": {
+    "1k": {
+     "name": "标清 1K",
+     "sizes": [
+      {
+       "ratio": 1,
+       "w": 1328,
+       "h": 1328
+      },
+      {
+       "ratio": 2,
+       "w": 1104,
+       "h": 1472
+      },
+      {
+       "ratio": 3,
+       "w": 1664,
+       "h": 936
+      },
+      {
+       "ratio": 4,
+       "w": 1472,
+       "h": 1104
+      },
+      {
+       "ratio": 5,
+       "w": 936,
+       "h": 1664
+      },
+      {
+       "ratio": 6,
+       "w": 1056,
+       "h": 1584
+      },
+      {
+       "ratio": 7,
+       "w": 1584,
+       "h": 1056
+      },
+      {
+       "ratio": 8,
+       "w": 2016,
+       "h": 864
+      }
+     ]
+    },
+    "2k": {
+     "name": "高清 2K",
+     "sizes": [
+      {
+       "ratio": 1,
+       "w": 2048,
+       "h": 2048
+      },
+      {
+       "ratio": 2,
+       "w": 1728,
+       "h": 2304
+      },
+      {
+       "ratio": 3,
+       "w": 2560,
+       "h": 1440
+      },
+      {
+       "ratio": 4,
+       "w": 2304,
+       "h": 1728
+      },
+      {
+       "ratio": 5,
+       "w": 1440,
+       "h": 2560
+      },
+      {
+       "ratio": 6,
+       "w": 1664,
+       "h": 2496
+      },
+      {
+       "ratio": 7,
+       "w": 2496,
+       "h": 1664
+      },
+      {
+       "ratio": 8,
+       "w": 3024,
+       "h": 1296
+      }
+     ]
+    }
+   },
+   "prices": {
+    "t2i": {
+     "default": 1,
+     "2k": 1
+    },
+    "i2i": {
+     "default": 1
+    }
+   },
+   "max_images": null,
+   "max_prompt_length": 2000
+  }
+ ]
+}
