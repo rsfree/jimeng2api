@@ -1,0 +1,47 @@
+# jimeng2api · ai-prod 部署声明
+#
+# 源（第一真源）：/Users/macstudio/Desktop/wb/jimengcn
+# 目标：root@210.121.44.245:/opt/jimeng2api
+# 入口：https://jimeng.1task.cn → nginx → 127.0.0.1:39076 → 容器 :8300
+#
+# 🔴 端口只绑回环：ai-prod ufw 放行 39000-40000 整段，绑 0.0.0.0 等于把
+#    「能花即梦账号积分的网关」+ 管理面板裸到公网。
+#
+# 🔴 协调器必须单进程：gunicorn workers=1 是硬约束（见 gunicorn_conf.py）。
+#    多 worker 会让同一批 queued 任务被重复提交 = 双倍计费。
+#
+# 🔴 data 必须挂目录：SQLite 有 -wal/-shm 伴随文件，挂单文件会丢写入。
+name: jimeng2api
+
+services:
+  jimeng2api:
+    build:
+      context: .
+      args:
+        # 1 = 带 Playwright + Chromium（面板扫码 / 远程浏览器入池，镜像 +~300MB）
+        WITH_LOGIN: "1"
+    image: jimeng2api:0.1.1
+    container_name: jimeng2api
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:39076:8300"
+    volumes:
+      - ./data:/data
+    environment:
+      JIMENG2API_DATA: /data
+      # 管理员 Key（面板登录 + 业务调用）：按「sk- + 二级域名」约定固定，
+      # 仅在库里还没有 admin key 时生效（见 app/security.py:bootstrap）。
+      JIMENG2API_ADMIN_KEY: ${JIMENG2API_ADMIN_KEY:-}
+      JIMENG2API_COORDINATOR: "1"
+      JIMENG2API_LOG_LEVEL: INFO
+      TZ: Asia/Shanghai
+    stop_grace_period: 30s
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:8300/healthz', timeout=3).status==200 else 1)"
+      interval: 30s
+      timeout: 5s
+      start_period: 20s

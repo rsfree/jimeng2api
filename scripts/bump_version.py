@@ -24,6 +24,10 @@ TARGETS = [
     # (相对路径, 正则, 替换模板)
     ("app/__init__.py", r'__version__ = "[^"]+"', '__version__ = "{v}"'),
     ("docker-compose.yml", r"image: jimeng2api:[\w.\-]+", "image: jimeng2api:{v}"),
+    # 生产实际执行的就是这一份（部署时 tar 到 /opt/jimeng2api 根目录覆盖）
+    ("docker-compose.prod.yml", r"image: jimeng2api:[\w.\-]+",
+     "image: jimeng2api:{v}"),
+    # deploy/ 下那份是给人看的部署样例，也得同步，否则照着它部署会拉起旧镜像
     ("deploy/ai-prod/docker-compose.yml", r"image: jimeng2api:[\w.\-]+",
      "image: jimeng2api:{v}"),
 ]

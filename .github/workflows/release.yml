@@ -105,7 +105,7 @@ jobs:
           fi
 
           python3 scripts/bump_version.py "$VERSION"
-          git add app/__init__.py docker-compose.yml deploy/ai-prod/docker-compose.yml
+          git add app/__init__.py docker-compose.yml docker-compose.prod.yml deploy/ai-prod/docker-compose.yml
           git commit -m "chore(release): ${TAG}"
           # detached HEAD 上没有叫 main 的本地分支，必须 HEAD:main
           git push origin HEAD:main

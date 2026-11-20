@@ -34,6 +34,40 @@
    （`error while loading shared libraries: libatomic.so.1`），而 `--with-deps`
    本身要先跑 node ⇒ 鸡生蛋。必须在 pip install 之前手动 `apt-get install libatomic1`。
 
+## 发版（自动化）
+
+`.github/workflows/release.yml` 是**混合模型**，三种入口：
+
+| 入口 | 行为 |
+|---|---|
+| push 到 `main` | 读最新 `vX.Y.Z` tag，**自增 patch** → 写回版本 → 打 tag → 建 Release |
+| 人工打 tag `vX.Y.Z` | 按该 tag 发（不递增），用于你想自己定版本号时 |
+| `workflow_dispatch` + `tag` | **补发**已存在的 tag（Release 被删/建失败时用） |
+
+版本号写回**四处**（`scripts/bump_version.py`，每条正则断言恰好命中 1 次）：
+
+```
+app/__init__.py                    __version__        ← /healthz 报的就是它
+docker-compose.yml                 镜像 tag（本地开发）
+docker-compose.prod.yml            镜像 tag（生产实际执行）
+deploy/ai-prod/docker-compose.yml  镜像 tag（部署样例）
+```
+
+```bash
+uv run python scripts/bump_version.py --check     # 校验四处一致
+```
+
+**跳过发版**：commit message 里带 `[skip release]`（纯文档/配置归位这类不发版的改动）。
+注意它匹配的是**整条 message** —— 描述这个开关的提交自己也会被跳过。
+
+## 发版 ≠ 部署
+
+Release 只做版本标记，**不动服务器**。部署仍按下面的「日常更新」手动执行。
+所以 push 后线上版本会落后一个版本号，这是预期行为，不是发版失败。
+
+（要改成发版即部署，需要在仓库里配一条 SSH 私钥 secret 并加 deploy job —— 目前没做，
+因为部署会重建容器、30 秒不可用，不适合无条件跟着每次 push 跑。）
+
 ## 日常更新
 
 ```bash
