@@ -81,7 +81,11 @@ class Settings:
 
     @property
     def version(self) -> str:
-        return "0.1.0"
+        # 单一事实来源：`app/__init__.py` 的 `__version__`。发版流水线只改那一处，
+        # 这里再抄一份字面量迟早漂移（`/healthz` 会报旧版本）。
+        from . import __version__
+
+        return __version__
 
 
 def load() -> Settings:
