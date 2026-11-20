@@ -54,7 +54,7 @@ ssh -i ~/.ssh/id_ed25519_auto_macstudio root@210.121.44.245 \
 ```bash
 curl -o /dev/null -w '%{http_code}\n' https://jimengcn.1task.cn/healthz     # 200
 curl -o /dev/null -w '%{http_code}\n' https://jimengcn.1task.cn/v1/models   # 200
-curl -o /dev/null -w '%{http_code}\n' https://jimengcn.1task.cn/panel/      # 302 → sso
+curl -o /dev/null -w '%{http_code}\n' https://jimengcn.1task.cn/panel/      # 200 → 应用自带登录页
 curl -o /dev/null -w '%{http_code}\n' https://jimengcn.1task.cn/docs        # 404
 curl -o /dev/null -w '%{http_code}\n' http://jimengcn.1task.cn/             # 301
 ```
