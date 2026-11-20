@@ -71,7 +71,16 @@ Release 只做版本标记，**不动服务器**。部署仍按下面的「日�
 ## 日常更新
 
 ```bash
-# 本机改完后同步源码（排除本地数据、虚拟环境、编辑器状态与 .env）
+./scripts/deploy.sh
+```
+
+一条命令做三件事：同步源码 → `up -d --build` → 轮询 `/healthz` 直到版本号与
+`app/__init__.py` 一致，最后打印镜像与容器状态。**任何一步失败即退出**，
+不会留下"同步了但没重启"或"重启了但版本没变"的半成品。
+
+等价的手动分解（脚本出问题时用）：
+
+```bash
 cd /Users/macstudio/Desktop/wb/jimengcn
 COPYFILE_DISABLE=1 tar czf - --exclude='.venv' --exclude='data' --exclude='.git' \
   --exclude='__pycache__' --exclude='.workbuddy' --exclude='.env' . \
@@ -79,7 +88,12 @@ COPYFILE_DISABLE=1 tar czf - --exclude='.venv' --exclude='data' --exclude='.git'
 
 ssh -i ~/.ssh/id_ed25519_auto_macstudio root@210.121.44.245 \
   'cd /opt/jimeng2api && docker compose -f docker-compose.prod.yml up -d --build'
+
+curl -s https://jimengcn.1task.cn/healthz   # 确认 version 与本地一致
 ```
+
+`data/` 与 `.env` **永不覆盖**：一个是在跑的 SQLite 库（含 `-wal`/`-shm`），
+一个是管理员 Key。脚本的 exclude 列表是这条约束的唯一实现，改它要慎重。
 
 > 全量重建（含 Chromium）约 6 分钟；只改 `app/` 时代码层缓存失效，Playwright 层命中缓存，约 40 秒。
 
