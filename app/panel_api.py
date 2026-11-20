@@ -20,7 +20,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query, Response
 from pydantic import BaseModel, Field
 
 from . import db, login_assistant, models, pool as pool_mod, remote_browser, repo, service
-from .upstream import postedit
+from .upstream import postedit, video
 from .config import settings
 from .coordinator import coordinator
 from .security import require_admin
@@ -584,6 +584,7 @@ def _models_payload(reg: models.Registry) -> dict:
     return reg.to_dict() | {
         "default_model": repo.runtime_config()["default_model"],
         "tools": postedit.panel_models(),
+        "videos": video.panel_models(),
         "unsupported": dict(postedit.UNSUPPORTED),
         "redirects": service.redirect_views(reg),
         "redirect_targets": service.redirect_target_options(reg),

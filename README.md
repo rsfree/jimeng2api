@@ -374,6 +374,55 @@ prompt 写"把红色方块换成…"是局部、写"把标记的区域变成…"
 `/panel/api/models` 的 `tools[]`（含这些内部字段与逐条取证 `notes`），
 面板的「模型与档位」页会把它们渲染成表。
 
+### 4.3 视频（文生视频）
+
+视频是**第三套草稿**（`video_base_component` + `gen_video`），与图片、后编辑都不是
+一回事：`generate_type` 是**字符串**、参数全在 `abilities.gen_video` 里、
+`extend.root_model` 等于模型的 `model_req_key`。
+
+```bash
+# 5 秒 / 720p，走默认模型（Seedance 2.0 mini）
+curl -s http://127.0.0.1:8300/v1/images/generations \
+  -H "Authorization: Bearer $KEY" -H "Content-Type: application/json" \
+  -d '{"model":"视频生成","prompt":"一只橘猫在窗台上伸懒腰","duration":5,
+       "resolution":"720p","ratio":"16:9"}'
+```
+
+产物与图片同一个 `data[]`，靠 `type` 区分：
+
+```json
+{"type": "video", "url": "https://…/x.mp4", "format": "mp4",
+ "width": 1280, "height": 720, "resolution": "720p",
+ "duration": 5, "fps": 24, "cover_url": "https://…/cover.jpeg",
+ "item_id": "7710070900703661337", "history_id": "51869467820556"}
+```
+
+| 项 | 值 | 证据 |
+|---|---|---|
+| 模型 | `jimeng-video`（默认）/ `-fast` / `-pro` / `-25` | 从视频专用 config 端点取全表，见 `docs/UPSTREAM-VIDEO.md` |
+| `duration` | 4~15 秒（越界按边界吸附并在 `degradations` 说明） | config 下发的 `4000~15000ms` |
+| `resolution` | `720p` / `1080p` | config 下发 |
+| 扣费 | 2.0 mini **≈6 积分/秒**（4s=24、5s=30）；2.5 Flash **≈19 积分/秒**（4s=76） | 三次真实提交 |
+| 耗时 | 约 **5 分钟**（48 次轮询），远慢于图片 | 实测 |
+
+**图生视频**：传 `image` 就是首帧（1 张），两张则是首帧 + 尾帧。
+
+```bash
+curl -s http://127.0.0.1:8300/v1/images/generations \
+  -H "Authorization: Bearer $KEY" -H "Content-Type: application/json" \
+  -d '{"model":"视频生成","prompt":"缓慢推近","duration":5,
+       "image":["https://…/start.jpg","https://…/end.jpg"]}'
+```
+
+实测：首帧确实被当作视频起点（抽出第一帧与原图对比，构图一致），4s 扣 24 积分。
+
+⚠️ 两点必须知道：
+
+1. **视频很慢**。同步端点（`/v1/images/generations`）的 `sync_timeout` 对视频几乎
+   必然不够，请用异步端点（`/async/v1/...`）拿 `task_id` 再轮询。
+2. **同步慢不代表失败**。上游在生成期间一直回 `submitted`，直到 48 次轮询后才
+   `success` —— 别按图片的耐心判超时。
+
 ---
 
 ## 5. 架构：五条主线

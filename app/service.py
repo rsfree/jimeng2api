@@ -26,7 +26,7 @@ import httpx
 from . import db, pool as pool_mod, repo
 from .config import settings
 from .models import ModelSpec, Registry
-from .upstream import postedit, protocol
+from .upstream import video, postedit, protocol
 from .upstream.errors import JimengError, JimengParamError
 
 log = logging.getLogger("jimeng2api.service")
@@ -467,6 +467,62 @@ def cutout(*, api_key_id: int | None, image: str) -> dict:
 
 
 # ---------------------------------------------------------------- 建任务
+def _create_video_task(*, api_key_id: int | None, model: str, prompt: str,
+                       resolution: str, duration: int | None,
+                       ratio: str,
+                       images: Sequence[str] | None = None) -> dict:
+    """建视频任务。参数边界来自 `/mweb/v1/video_generate/get_common_config`。"""
+    vm = video.get(model)
+    if vm is None:
+        raise JimengParamError(f"未知视频模型 {model!r}", kind="param")
+    text = str(prompt or "").strip()
+    if not text:
+        raise JimengParamError("视频生成必须给 prompt", kind="param")
+
+    degradations: list[str] = []
+    # 时长：秒（UI 语义），落到 duration_ms。越界按边界吸附并在降级里说明
+    sec = int(duration) if duration else (vm.durations[0] if vm.durations else 5)
+    if sec * 1000 < video.DURATION_MIN_MS:
+        degradations.append(f"时长最短 {video.DURATION_MIN_MS // 1000}s，已按最短处理")
+        sec = video.DURATION_MIN_MS // 1000
+    if sec * 1000 > video.DURATION_MAX_MS:
+        degradations.append(f"时长最长 {video.DURATION_MAX_MS // 1000}s，已按最长处理")
+        sec = video.DURATION_MAX_MS // 1000
+
+    res = (resolution or "").strip().lower()
+    if res not in vm.resolutions:
+        if res:
+            degradations.append(
+                f"{vm.name} 无 {res} 档（可选 {list(vm.resolutions)}），"
+                f"改用 {vm.resolutions[0]}")
+        res = vm.resolutions[0]
+
+    asp = (ratio or "").strip()
+    if asp not in video.ASPECT_RATIOS:
+        if asp:
+            degradations.append(
+                f"不支持比例 {asp}（可选 {list(video.ASPECT_RATIOS)}），改用 16:9")
+        asp = "16:9"
+
+    # 图生视频：0 张 = 文生视频，1 张 = 首帧，2 张 = 首帧 + 尾帧。
+    # 超过 2 张直接拒 —— 多出来的那几张没有语义，静默丢掉会让用户以为生效了。
+    frames = [x for x in (images or []) if x]
+    if len(frames) > 2:
+        raise JimengParamError(
+            "视频最多两张图：第 1 张作首帧、第 2 张作尾帧（多传无意义）",
+            kind="param")
+
+    return repo.create_task(
+        task_id=str(uuid.uuid4()), api_key_id=api_key_id, mode="video",
+        model=vm.key, prompt=text, negative_prompt="", size="",
+        width=0, height=0, resolution=res, count=1, seed=None,
+        image_uris=frames, mask_uri="",
+        degradations=degradations,
+        extras={"video": {"duration_ms": sec * 1000, "aspect_ratio": asp,
+                          "duration_s": sec}},
+    )
+
+
 def _create_postedit_task(*, api_key_id: int | None, model: str, prompt: str,
                           size: str, count: int, resolution: str,
                           images: list[str], mask: str | None,
@@ -602,11 +658,19 @@ def create_task(*, api_key_id: int | None, model: str, prompt: str,
                 mask: str | None = None,
                 ratio: str = "", scale: float | None = None,
                 markers: list[dict] | None = None,
+                duration: int | None = None,
                 extras: dict | None = None) -> dict:
     refs = [x for x in (images or []) if x]
     # 别名先归一：否则直接调本函数（脚本/测试）时，别名指向后编辑能力会被
     # 当成生成模型送进 resolve_request，报一个误导性的"未知模型"。
     model = resolve_redirect(model) if model else model
+    # 视频是**第三套**草稿（video_base_component），参数集与图片/后编辑都不同，
+    # 所以最先分流 —— 不能落到 resolve_request 里（那会报"未知模型"）。
+    if video.is_video(model):
+        return _create_video_task(
+            api_key_id=api_key_id, model=model, prompt=prompt,
+            resolution=resolution, duration=duration, ratio=ratio,
+            images=refs)
     # 后编辑与 t2i/i2i 的草稿结构不同（无 core_param），先分流再解析模型
     if postedit.is_postedit(model):
         return _create_postedit_task(
@@ -879,6 +943,26 @@ def _submit(account_id: int, task: dict, uris: list[str]) -> str:
             prompt=task.get("prompt") or "",
             extra=(task.get("extras") or {}).get("extra"),
             workspace_id=settings.postedit_workspace)
+    if task["mode"] == "video":
+        vm = video.get(task["model"])
+        if vm is None:
+            raise JimengParamError(f"未知视频模型 {task['model']!r}", kind="param")
+        ex = (task.get("extras") or {}).get("video") or {}
+        refs = [x for x in (task.get("image_uris") or []) if x]
+        first = end = None
+        if refs:
+            # `tos-` 直传拿不到尺寸（上游 `image_by_uri` 也回 0），传 0 由上游自己读
+            uri, w, h = _upload_one(account_id, refs[0])
+            first = video.frame_node(uri, w, h)
+        if len(refs) > 1:
+            uri, w, h = _upload_one(account_id, refs[1])
+            end = video.frame_node(uri, w, h)
+        return rt.client.submit_video(
+            model=vm, submit_id=task["id"], prompt=task["prompt"],
+            duration_ms=int(ex.get("duration_ms") or 5000),
+            resolution=task["resolution"] or vm.resolutions[0],
+            aspect_ratio=ex.get("aspect_ratio") or "16:9",
+            first_frame=first, end_frame=end)
     if task["mode"] == "i2i":
         return rt.client.submit_i2i(
             prompt=task["prompt"], image_uris=uris, model=task["model"],

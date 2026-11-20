@@ -234,6 +234,47 @@ def _pick(d: dict, *keys: str) -> Any:
     return None
 
 
+def _append_video(out: dict, it: dict) -> bool:
+    """视频产物落进 `images[]`（同一个交付容器），带 `type=video` 区分。
+
+    为什么不另开 `videos[]`：`/v1/images/generations` 的 `data[]` 是唯一的交付位，
+    客户端按 `type` 分流比按"有没有这个键"分流更稳。图片项也补 `type=image`，
+    这样两边的形状一致。
+    """
+    vid = it.get("video") or {}
+    if not isinstance(vid, dict) or not vid:
+        return False
+    trans = vid.get("transcoded_video") or {}
+    best: tuple[int, dict, str] | None = None
+    for res_key, v in trans.items():
+        if not isinstance(v, dict):
+            continue
+        url = v.get("video_url")
+        if not isinstance(url, str) or not url.strip():
+            continue
+        score = int(v.get("width") or 0) * int(v.get("height") or 0)
+        if best is None or score > best[0]:
+            best = (score, v, str(res_key))
+    if best is None:
+        return False
+    _, v, res_key = best
+    common = it.get("common_attr") or {}
+    out["images"].append({
+        "url": v["video_url"].strip(),
+        "type": "video",
+        "width": v.get("width"), "height": v.get("height"),
+        "format": "mp4", "resolution": res_key,
+        "duration": vid.get("duration") or 0,
+        "fps": v.get("fps"),
+        "video_id": vid.get("video_id") or "",
+        "cover_url": common.get("cover_url") or "",
+        "item_id": common.get("id"),
+        "history_id": out.get("history_id"),
+        "uri": "", "note": "",
+    })
+    return True
+
+
 def parse_task(submit_id: str, node: dict) -> dict:
     """把 `data[submit_id]` 翻译成统一结构。解析不到产物**不算成功**。"""
     task = node.get("task") or {}
@@ -275,6 +316,10 @@ def parse_task(submit_id: str, node: dict) -> dict:
     mi = node.get("model_info") or {}
     out["model"] = _pick(mi, "model_req_key", "model_name")
     for it in (node.get("item_list") or []):
+        # 视频产物在 `video.transcoded_video[<档>]`，与图片不是同一棵树。
+        # 取**最高分辨率**那一档：上游会同时给 360p/720p/1080p，都是同一段视频。
+        if _append_video(out, it):
+            continue
         img = it.get("image") or {}
         large = img.get("large_images") or []
         url = w = h = fmt = None
@@ -289,7 +334,7 @@ def parse_task(submit_id: str, node: dict) -> dict:
             note = "URL 取自 item_urls 兜底（可能带水印）" if url else ""
         if url:
             out["images"].append({
-                "url": url, "width": w, "height": h,
+                "url": url, "type": "image", "width": w, "height": h,
                 "format": fmt or img.get("format") or "png",
                 "item_id": (it.get("common_attr") or {}).get("id"),
                 # 冗余一份到产物里：客户端拿着这一项就能直接拼

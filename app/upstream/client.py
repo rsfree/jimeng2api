@@ -21,7 +21,7 @@ from typing import Any, Callable, Sequence
 
 import httpx
 
-from . import postedit, protocol
+from . import postedit, video, protocol
 from .errors import (JimengError, JimengNetworkError, raise_for_ret)
 from .sign import sign_headers
 
@@ -262,6 +262,24 @@ class JimengClient:
             ability=ability, source=source, submit_id=submit_id, aid=int(self.aid),
             resolution=resolution, count=count, extra=extra,
             workspace_id=workspace_id, prompt=prompt)
+        self._post(PATH_SUBMIT, body, task_id=submit_id)
+        return submit_id
+
+    def submit_video(self, *, model, submit_id: str, prompt: str,
+                     duration_ms: int, resolution: str,
+                     aspect_ratio: str,
+                     first_frame: dict | None = None,
+                     end_frame: dict | None = None) -> str:
+        """视频提交（`video_base_component` + `gen_video`）。
+
+        与后编辑同一个端点，但草稿是另一棵树（见 `app/upstream/video.py`）。
+        实测：720p/4s 提交 ret=0，48 次轮询后 success，产物 mp4 可直接下载。
+        """
+        body = video.build_submit_body(
+            model=model, submit_id=submit_id, prompt=prompt,
+            duration_ms=duration_ms, resolution=resolution,
+            aspect_ratio=aspect_ratio, aid=str(self.aid),
+            first_frame=first_frame, end_frame=end_frame)
         self._post(PATH_SUBMIT, body, task_id=submit_id)
         return submit_id
 

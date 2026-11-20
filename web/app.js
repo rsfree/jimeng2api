@@ -743,6 +743,24 @@
           : '<div class="pad note">8 项能力全部接入</div>'}
       </div>` : ''}
 
+      ${(d.videos && d.videos.length) ? `
+      <div class="box">
+        <header><h3>视频模型<span class="hint">第三套草稿：video_base_component</span></h3>
+          <span class="grow"></span>
+          <span class="note">${d.videos.length} 项 · ≈6 积分/秒（720p mini）· 单次约 5 分钟</span></header>
+        <div class="table-wrap"><table class="tbl">
+          <thead><tr><th>模型</th><th>model_req_key</th><th>时长档</th><th>分辨率</th><th>别名</th></tr></thead>
+          <tbody>${d.videos.map((v) => `
+            <tr>
+              <td><div class="cell-2"><span class="strong">${esc(v.name)}</span>
+                <span class="s"><code>${esc(v.id)}</code></span></div></td>
+              <td class="nowrap"><code>${esc(v.model_req_key)}</code></td>
+              <td class="nowrap">${(v.durations || []).map((x) => `<span class="tag">${esc(String(x))}s</span>`).join(' ') || '—'}</td>
+              <td class="nowrap">${(v.resolutions || []).map((x) => `<span class="tag">${esc(x)}</span>`).join(' ') || '—'}</td>
+              <td class="nowrap">${(v.aliases || []).map((x) => `<span class="tag">${esc(x)}</span>`).join(' ') || '—'}</td>
+            </tr>`).join('')}</tbody></table></div>
+      </div>` : ''}
+
       <div class="box">
         <header><h3>试玩 / 构造草稿<span class="hint">默认 dry-run：不请求上游、不计费</span></h3>
           <span class="grow"></span><span class="note">${esc(price)}</span></header>

@@ -1,8 +1,65 @@
-# 视频：已逆出的结构（2026-11-20 侦察，**未实现**）
+# 视频：结构、取值与实测（**已实现**）
 
-> 状态：**只到结构级，没有提交过**。本文记录"从 bundle 里能确定什么、还缺什么"，
-> 免得下一个人从零再逆一遍。所有字段名来自前端 `serializable()` 装饰器，**不是猜的**；
-> 但"哪些字段必需、取值多少"没有抓包佐证，见 §5。
+> 状态：**已接入网关并端到端实测通过**（2026-11-20）。字段名来自前端
+> `serializable()` 装饰器，取值来自 `/mweb/v1/video_generate/get_common_config`，
+> 结果是真实提交跑出来的 —— 三段都不是猜的。
+
+## 0. 实测结果（2026-11-20）
+
+| 项 | 值 |
+|---|---|
+| 模型 | `dreamina_seedance_40_mini`（UI 默认，`default_model_idx=3`） |
+| 参数 | 720p / 4000ms / 16:9 / `video_mode=2` / `fps=24` |
+| 提交 | `ret=0`，`history_record_id=51869467820556` |
+| 轮询 | `submitted` → 48 次（约 5 分钟）→ `success` |
+| 产物 | **1280×720 mp4**，`HTTP 206` + `video/mp4`，文件头为有效 ISO MP4 |
+| 扣费 | **24 积分**（4s；另一发 5s 扣 30 → **≈6 积分/秒**，720p mini） |
+
+产物落点：`item_list[].video.transcoded_video[<档>].video_url`（同一段视频给
+360p/720p/1080p 多档，取最高分辨率）。
+
+### 图生视频（首帧）实测
+
+同一套草稿，`video_gen_inputs[0]` 多一个 `first_frame_image`：
+
+```json
+{"image_uri": "tos-cn-i-…", "width": 1024, "height": 1024, "format": "png"}
+```
+
+**它是扁平对象**，不是图片侧那种完整 image node（那个带 `type`/`source_from`/
+`platform_type`）—— 两种形态项目里都有，套错不会报错，只会静默失效。
+
+| 项 | 值 |
+|---|---|
+| 提交 | `ret=0`，`1:1` / 720p / 4000ms |
+| 轮询 | 16 次（约 96 秒）→ `success`，比文生视频快得多 |
+| 产物 | 960×960 mp4 |
+| 扣费 | **24 积分**（与文生视频同价） |
+| **首帧生效** | 抽出视频第一帧与原图逐像素对比：构图、图形、位置一致（仅轻微缩放） |
+
+所以 `first_frame_image` 是**真起点**，不是"参考图"。
+
+`end_frame_image` 结构相同（扁平对象），网关已支持但**未单独实测**。
+
+### Seedance 2.5 Flash 实测（2026-11-20）
+
+同一套草稿，只换 `model_req_key` = `dreamina_seedance_45_flash`：
+
+| 项 | 值 |
+|---|---|
+| 提交 | `ret=0`，720p / 4000ms / 16:9 |
+| 轮询 | 18 次（约 108 秒）→ `success` |
+| 产物 | 1280×720 mp4，抽帧确认画面正常（橘猫起身伸懒腰，两帧有动作变化） |
+| 扣费 | **76 积分**（4s）→ **≈19 积分/秒** |
+
+**价差是 3.2 倍**：同参数下 2.0 mini 只要 24 积分。UI 上"¥0.08/秒"是会员/团队卡
+折算价，不是积分价 —— 别拿它做成本估算。
+
+所以网关把单价做进模型表（`credits_per_second`），**不再用全局常量**：
+未实测的模型给 `null`，面板显示"—"，而不是编一个数。
+
+⚠️ `duration` 字段回显是 5 秒（我们传 4000ms）—— 上游似乎有 5 秒起点的取整，
+config 的 `min_duration_ms: 4000` 与实际产物时长不完全一致。
 
 ## 1. 与图片完全不是一套
 
@@ -96,7 +153,37 @@ extend: { mVideoCommerceInfo, templateId, rootModel, historyOption }
 （`_getRootModel`）—— 视频的 `root_model` **等于模型 key**，与智能编辑的
 `high_aes_general_v55` 是同一套逻辑。
 
-## 5. 还缺什么（要一次真实 UI 抓包）
+## 5. 当初缺的三样，已全部补齐
+
+`model_req_key` 的取值来自 **`POST /mweb/v1/video_generate/get_common_config`** ——
+这是视频**专用**的 config 端点（`/mweb/v1/get_common_config?scene=video` 无效，
+参数被忽略、返回的还是图片模型）。它一次给全：
+
+* `model_list[]`：19 个模型的 `model_name` + `model_req_key` + `default_model_idx`
+* `video_duration_display_range`：`{min_duration_ms: 4000, max_duration_ms: 15000}`
+* `video_resolution_display_list`：`720p` / `1080p`
+
+模型表（2026-11-20）：
+
+| idx | 显示名 | model_req_key |
+|---|---|---|
+| 0 | 即梦 Seedance 2.5 Flash | `dreamina_seedance_45_flash` |
+| 1 | 即梦 Seedance 2.5（样片模式） | `dreamina_seedance_45_pro_draft` |
+| 2 | 即梦 Seedance 2.5 | `dreamina_seedance_45_pro` |
+| **3** | **即梦 Seedance 2.0 mini**（默认） | **`dreamina_seedance_40_mini`** |
+| 4 | 即梦 Seedance 2.0 Fast VIP | `dreamina_seedance_40_vision` |
+| 5 | 即梦 Seedance 2.0 VIP | `dreamina_seedance_40_pro_vision` |
+| 6 | 即梦 Seedance 2.0 Fast | `dreamina_seedance_40` |
+| 7 | 即梦 Seedance 2.0 | `dreamina_seedance_40_pro` |
+| 10/11 | 即梦 Seedance 1.0 / Fast | `dreamina_ic_generate_video_model_vgfm_3.0_pro` / `_fast` |
+| 12/13 | Wan 3.0 Prime / Wan 3.0 | `dreamina_wan_30_prime` / `dreamina_wan_30` |
+| 14/15 | HappyHorse 1.1 / 1.0 | `dreamina_happyhorse_v1_1` / `_v1_0` |
+| 16/17/18 | Vidu Q4 / Q3 / Q2 | `dreamina_vidu_q4` / `_q3` / `_q2` |
+
+网关当前只开放**有明确显示名的四个**（mini / Fast / 2.0 / 2.5）；
+其余（含两个显示名为空的重制版）语义未取证，先不列。
+
+## 5.0 旧记录：还缺什么（已解决）
 
 | 缺的东西 | 为什么逆不出来 |
 |---|---|

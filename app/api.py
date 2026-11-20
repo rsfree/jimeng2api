@@ -25,7 +25,7 @@ from . import db, pool as pool_mod, repo, service
 from .config import settings
 from .coordinator import coordinator
 from .security import require_key
-from .upstream import postedit
+from .upstream import postedit, video
 from .upstream.errors import JimengError, JimengParamError
 
 router = APIRouter()
@@ -66,6 +66,9 @@ class GenerateRequest(BaseModel):
     scale: float | None = Field(
         default=None,
         description="扩图倍率（仅 ratio=original 生效）：1.5 / 2 / 3")
+    duration: int | None = Field(
+        default=None,
+        description="视频时长（秒）：4~15。仅视频模型生效；越界按边界吸附")
     markers: list[dict] | None = Field(
         default=None,
         description=("智能编辑的画布标记：brush{points} / arrow{start,end}，"
@@ -295,7 +298,9 @@ def _payload(req: GenerateRequest) -> dict:
     model = service.resolve_redirect(requested) if requested else ""
     # 后编辑 / 未开放能力不参与 t2i 的别名解析：解析器只认能力表里的
     # 生成模型，硬套会把 `jimeng-hd` 报成"未知模型"，掩盖真正的原因。
-    if model and not postedit.is_postedit(model) and not postedit.unsupported_reason(model):
+    if (model and not postedit.is_postedit(model)
+            and not video.is_video(model)
+            and not postedit.unsupported_reason(model)):
         model = service.resolve_model_name(model)
     return {
         "model": model, "prompt": req.prompt, "size": req.size,
@@ -305,7 +310,7 @@ def _payload(req: GenerateRequest) -> dict:
         "negative_prompt": req.negative_prompt, "seed": req.seed,
         "images": images, "mask": req.mask,
         "ratio": req.ratio or "", "scale": req.scale,
-        "markers": req.markers,
+        "markers": req.markers, "duration": req.duration,
         # 只用于响应回显（别名请求回别名）。模型解析结果不靠它 ——
         # 任务行里的 model 永远是上游 key / 能力 id。
         "extras": {"requested_model": requested} if requested else {},
@@ -379,7 +384,10 @@ def generate(req: GenerateRequest, key: dict = Depends(require_key)) -> Any:
     # 后编辑默认**不等待**：2K 超清实测 38.5s，4K/8K 更久。占着连接等到超时
     # 再降级，会让"降级"变成常态而不是异常。要同步就显式传 wait。
     # task 可能来自测试替身或旧行，取不到 model 就回落到请求里的
-    if postedit.is_postedit(task.get("model") or req.model) and req.wait is None:
+    # 视频比后编辑更慢（实测 5 分钟 vs 38.5 秒），默认**绝不等待** ——
+    # 占着连接等 5 分钟再降级，客户端早就超时了。
+    req_model = task.get("model") or req.model
+    if (postedit.is_postedit(req_model) or video.is_video(req_model)) and req.wait is None:
         budget = float(cfg["postedit_sync_wait"])
     else:
         budget = min(float(cfg["sync_timeout"]),
@@ -523,6 +531,9 @@ def list_models() -> dict:
         "captured_at": reg.captured_at,
         "data": data,
         "tools": tools,
+        # 视频是**第三套**参数（duration / resolution / ratio），与 data 的
+        # size/count、tools 的 mask/ratio 都不是一回事，单开一个键最清楚。
+        "videos": video.public_models(),
     }
 
 
