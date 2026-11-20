@@ -15,7 +15,12 @@ RUN pip install --no-cache-dir -r requirements.txt gunicorn
 # 可选：扫码登录助手（Playwright + Chromium，镜像会大 ~300MB）
 ARG WITH_LOGIN=0
 ENV PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
+# 🔴 slim 镜像缺 libatomic1：playwright 的 node 驱动起不来（exit 127），
+#    而 `playwright install --with-deps` 本身要先跑 node ⇒ 必须先手动补这个包。
 RUN if [ "$WITH_LOGIN" = "1" ]; then \
+      apt-get update && \
+      apt-get install -y --no-install-recommends libatomic1 && \
+      rm -rf /var/lib/apt/lists/* && \
       pip install --no-cache-dir -r requirements-login.txt && \
       playwright install --with-deps chromium && \
       chmod -R a+rX /ms-playwright; \

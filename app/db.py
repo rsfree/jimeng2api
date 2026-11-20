@@ -86,6 +86,7 @@ CREATE TABLE IF NOT EXISTS tasks (
     upstream_status INTEGER,
     progress      TEXT NOT NULL DEFAULT '',
     images        TEXT NOT NULL DEFAULT '[]',
+    degradations  TEXT NOT NULL DEFAULT '[]',
     error         TEXT NOT NULL DEFAULT '',
     error_kind    TEXT NOT NULL DEFAULT '',
     forecast_credits INTEGER,
@@ -101,6 +102,18 @@ CREATE TABLE IF NOT EXISTS tasks (
 CREATE INDEX IF NOT EXISTS idx_tasks_status ON tasks(status, next_poll_at);
 CREATE INDEX IF NOT EXISTS idx_tasks_created ON tasks(created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_tasks_account ON tasks(account_id, status);
+
+-- 产物归属：`item:<item_id>:<history_id>` 这种引用**绑账号** —— 拿 A 号的
+-- item_id 去 B 号提交必然失败，而「细节修复」用错还要计费。所以成功出图时
+-- 记下 item 属于谁，后续 item 引用就锁定同一个号。
+CREATE TABLE IF NOT EXISTS assets (
+    item_id    TEXT PRIMARY KEY,
+    history_id TEXT NOT NULL DEFAULT '',
+    account_id INTEGER NOT NULL,
+    task_id    TEXT NOT NULL DEFAULT '',
+    created_at INTEGER NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_assets_account ON assets(account_id);
 
 CREATE TABLE IF NOT EXISTS request_logs (
     id          INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -136,6 +149,21 @@ CREATE TABLE IF NOT EXISTS settings (
     key   TEXT PRIMARY KEY,
     value TEXT NOT NULL
 );
+
+-- 模型重定向：调用方用的模型名（常是各厂商官网命名）→ 本网关模型。
+-- 只存"对外名 → 目标"，目标仍交给 `service.model_aliases()` 解析，
+-- 因此上游改名/换 key 时不用改这张表。alias 归一化成小写（解析不区分大小写），
+-- 主键用自增 id：模型名里允许出现 `/`（`google/imagen-4.0`），用别名做 URL
+-- 路径参数会被路由截断。
+CREATE TABLE IF NOT EXISTS model_redirects (
+    id         INTEGER PRIMARY KEY AUTOINCREMENT,
+    alias      TEXT    NOT NULL UNIQUE,
+    target     TEXT    NOT NULL,
+    note       TEXT    NOT NULL DEFAULT '',
+    enabled    INTEGER NOT NULL DEFAULT 1,
+    created_at INTEGER NOT NULL,
+    updated_at INTEGER NOT NULL
+);
 """
 
 
@@ -153,12 +181,29 @@ def conn() -> sqlite3.Connection:
 
 def init() -> None:
     with _LOCK:
-        conn()
+        c = conn()
+        # 增量列：`CREATE TABLE IF NOT EXISTS` 不会给已有库补列，
+        # 这里按 PRAGMA 逐列补 —— 迁移必须幂等，重启不能报错。
+        _ensure_columns(c, "tasks", {
+            "mask_uri": "TEXT NOT NULL DEFAULT ''",
+            "extras": "TEXT NOT NULL DEFAULT '{}'",
+            # 吸附过程（"请求了 A、实际做 B"）：客户端看不到，面板要能查
+            "degradations": "TEXT NOT NULL DEFAULT '[]'",
+        })
         # 已有库也要收紧权限（首次创建时靠 umask，历史库靠这里）
         try:
             os.chmod(settings.db_path, 0o600)
         except OSError:
             pass
+
+
+def _ensure_columns(c: sqlite3.Connection, table: str,
+                    columns: dict[str, str]) -> None:
+    have = {row[1] for row in c.execute(f"PRAGMA table_info({table})")}
+    for name, ddl in columns.items():
+        if name not in have:
+            c.execute(f"ALTER TABLE {table} ADD COLUMN {name} {ddl}")
+    c.commit()
 
 
 @contextmanager

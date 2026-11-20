@@ -26,7 +26,8 @@ def client():
 @pytest.fixture(autouse=True)
 def clean_tables():
     db.init()
-    for table in ("accounts", "tasks", "request_logs", "upstream_logs"):
+    for table in ("accounts", "tasks", "request_logs", "upstream_logs",
+                  "model_redirects"):
         db.execute(f"DELETE FROM {table}")
     yield
 

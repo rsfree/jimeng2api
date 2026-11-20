@@ -22,6 +22,10 @@ RUNTIME_DEFAULTS: dict[str, Any] = {
     "poll_interval": 2.0,        # 协调器轮询间隔（秒）
     "task_timeout": 900,         # 单任务总超时（秒）
     "sync_timeout": 300,         # 同步接口最长等待（秒）
+    #: 后编辑（超清/细节修复/扩图）在同步端点上的等待秒数。
+    #: 0 = 不等待，直接 202 + poll_url（默认）。一次 2K 超清实测 38.5s，
+    #: 4K/8K 更久，占着连接等只会把"超时降级"变成常态。
+    "postedit_sync_wait": 0,
     "default_model": "high_aes_general_v55",
     "cooldown_rate": 60,         # 限流冷却（秒）
     "cooldown_risk": 1800,       # 风控冷却（秒）
@@ -191,6 +195,52 @@ def set_cooldown(account_id: int, seconds: int, reason: str) -> None:
                          account_id))
 
 
+# --------------------------------------------------------------- 模型重定向
+def list_redirects() -> list[dict]:
+    rows = db.query("SELECT * FROM model_redirects ORDER BY alias ASC")
+    return [dict(r) | {"enabled": bool(r["enabled"])} for r in rows]
+
+
+def redirect_map() -> dict[str, str]:
+    """运行时实际生效的映射（只含启用项）。alias 已归一化为小写。"""
+    rows = db.query(
+        "SELECT alias, target FROM model_redirects WHERE enabled = 1")
+    return {r["alias"]: r["target"] for r in rows}
+
+
+def get_redirect(rid: int) -> dict | None:
+    row = db.one("SELECT * FROM model_redirects WHERE id = ?", (rid,))
+    return (dict(row) | {"enabled": bool(row["enabled"])}) if row else None
+
+
+def redirect_by_alias(alias: str) -> dict | None:
+    row = db.one("SELECT * FROM model_redirects WHERE alias = ?", (alias,))
+    return (dict(row) | {"enabled": bool(row["enabled"])}) if row else None
+
+
+def create_redirect(alias: str, target: str, note: str = "",
+                    enabled: bool = True) -> int:
+    now = db.now()
+    return db.execute(
+        "INSERT INTO model_redirects(alias, target, note, enabled, created_at,"
+        " updated_at) VALUES(?,?,?,?,?,?)",
+        (alias, target, note, int(enabled), now, now))
+
+
+def update_redirect(rid: int, **fields: Any) -> None:
+    allowed = {k: v for k, v in fields.items()
+               if k in ("target", "note", "enabled")}
+    if not allowed:
+        return
+    sets = ", ".join(f"{k} = ?" for k in allowed)
+    db.execute(f"UPDATE model_redirects SET {sets}, updated_at = ? WHERE id = ?",
+               (*allowed.values(), db.now(), rid))
+
+
+def delete_redirect(rid: int) -> None:
+    db.execute("DELETE FROM model_redirects WHERE id = ?", (rid,))
+
+
 # --------------------------------------------------------------------- 密钥
 def hash_key(key: str) -> str:
     return hashlib.sha256(key.encode()).hexdigest()
@@ -272,6 +322,8 @@ def task_row(row) -> dict:
     d = {k: row[k] for k in row.keys()}
     d["images"] = db.loads(d.get("images"), [])
     d["image_uris"] = db.loads(d.get("image_uris"), [])
+    d["extras"] = db.loads(d.get("extras"), {})
+    d["degradations"] = db.loads(d.get("degradations"), [])
     d.pop("submit_draft", None)
     return d
 
@@ -279,15 +331,18 @@ def task_row(row) -> dict:
 def create_task(*, task_id: str, api_key_id: int | None, mode: str,
                 model: str, prompt: str, negative_prompt: str, size: str,
                 width: int, height: int, resolution: str, count: int,
-                seed: int | None, image_uris: list[str]) -> dict:
+                seed: int | None, image_uris: list[str],
+                mask_uri: str = "", extras: dict | None = None,
+                degradations: list[str] | None = None) -> dict:
     now = db.now()
     db.execute(
         "INSERT INTO tasks(id, api_key_id, mode, model, prompt, negative_prompt,"
-        " size, width, height, resolution, count, seed, image_uris, status,"
-        " created_at, updated_at, next_poll_at) "
-        "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,'queued',?,?,0)",
+        " size, width, height, resolution, count, seed, image_uris, mask_uri,"
+        " extras, degradations, status, created_at, updated_at, next_poll_at) "
+        "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,'queued',?,?,0)",
         (task_id, api_key_id, mode, model, prompt, negative_prompt, size,
          width, height, resolution, count, seed, db.dumps(image_uris),
+         mask_uri, db.dumps(extras or {}), db.dumps(degradations or []),
          now, now),
     )
     return get_task(task_id) or {}
@@ -314,6 +369,40 @@ def claim_queued(limit: int) -> list[dict]:
                 "WHERE id = ? AND status = 'queued'",
                 [(now, i) for i in ids])
     return [task_row(r) for r in rows]
+
+
+def remember_assets(account_id: int, task_id: str, images: list[dict]) -> int:
+    """记下产物属于哪个账号。供后续 `item:` 引用锁定账号。
+
+    只记有 `item_id` 的条目；同一 item 重复出现用 upsert（不覆盖首次归属 ——
+    一个 item 只可能属于一个账号，重复写入说明是同一条重试）。
+    """
+    n = 0
+    now = db.now()
+    for it in images or []:
+        if not isinstance(it, dict):
+            continue
+        item_id = str(it.get("item_id") or "").strip()
+        if not item_id:
+            continue
+        db.execute(
+            "INSERT INTO assets (item_id, history_id, account_id, task_id, created_at) "
+            "VALUES (?,?,?,?,?) ON CONFLICT(item_id) DO UPDATE SET "
+            "history_id = excluded.history_id, task_id = excluded.task_id",
+            (item_id, str(it.get("history_id") or ""), int(account_id),
+             str(task_id), now),
+        )
+        n += 1
+    return n
+
+
+def account_for_item(item_id: str) -> int | None:
+    """这个作品属于哪个账号；未知返回 None（可能是账号原有作品，走正常调度）。"""
+    if not item_id:
+        return None
+    row = db.one("SELECT account_id FROM assets WHERE item_id = ?",
+                 (str(item_id),))
+    return int(row["account_id"]) if row else None
 
 
 def mark_task_running(task_id: str, account_id: int, *, forecast: int | None,

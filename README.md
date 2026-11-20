@@ -158,7 +158,7 @@ sessionid 只写入本地库，**不回传前端、不打印日志**。
 | **任务中心** | 状态筛选、搜索、分页；详情抽屉含产物预览、刷新签名 URL、按 submit_id 对账实扣 |
 | **用量** | 近 7/14/30 天：请求、成功/失败、积分；按模型/账号/密钥聚合 |
 | **日志** | 请求日志（IP/UA/耗时）+ 上游日志（ret/错误类型/耗时），可只看失败 |
-| **模型与档位** | 实时能力表：模型、分辨率档、张数选项、单价（t2i/i2i）、输入图上限；**试玩**（默认 dry-run） |
+| **模型与档位** | 实时能力表：模型、分辨率档、张数选项、单价（t2i/i2i）、输入图上限；**模型重定向**（对外名 → 本网关模型，支持批量导入）；**后编辑工具表**（形态 / ability_code / gen_type / 输入约束 / 档位 / 是否要 mask / 取证记录）；**试玩**（默认 dry-run） |
 | **访问密钥** | 业务 Key / 管理员 Key；额度、已用、请求数；明文只显示一次 |
 | **设置** | 并发、轮询间隔、超时、冷却、低积分线、默认模型；上游站点只读信息 |
 
@@ -190,9 +190,9 @@ curl -s http://127.0.0.1:8300/async/v1/images/generations \
 
 curl -s http://127.0.0.1:8300/async/v1/images/generations/<task_id> \
   -H "Authorization: Bearer $KEY"
-# → 运行中 202 {"status":"queued|in_progress",...}
+# → 运行中 202 {"status":"queued|in_progress",...}   响应带 Retry-After
 # → 成功   200 {"status":"succeeded","data":[{"url":...}]}
-# → 失败   200 {"status":"failure","error":{"code":"task_failed|empty_result","message":...}}
+# → 失败   200 {"status":"failure","error":{"code":"…","message":...}}
 
 # 图生图：image 收 data URI / http(s) URL / tos image_uri，内部自动上传换 uri
 curl -s http://127.0.0.1:8300/v1/images/generations \
@@ -200,22 +200,179 @@ curl -s http://127.0.0.1:8300/v1/images/generations \
   -d '{"model":"seedream-5.5","prompt":"改成霓虹配色","image":"https://…/a.jpg"}'
 ```
 
-模型名支持三种写法：上游 key（`high_aes_general_v55`）、面板名
-（`seedream-5.5`）、`default`。完整清单见 `GET /v1/models`。
+模型名用 `GET /v1/models` 里的 `id`（如 `seedream-5.5`，默认模型带
+`"default": true`）或 `default`。旧的上游 key（`high_aes_general_v55`）
+**仍被接受**，但不再对外公布 —— 清单里不出现它，也不出现积分单价：
+`id` 是对外别名，价格是渠道成本结构，两者都留在网关内部。
 
-**异步接口的三条硬约定**（与上游同构，改它等于破坏已接入的客户端）：
+### 4.1 模型重定向（对外名 → 本网关模型）
+
+面板「模型与档位 → 模型重定向」里配置：调用方用各厂商官网的模型名请求，
+网关负责映射到本网关模型（也可映射到后编辑工具）。
+
+```json
+{"model": "doubao-seedream-4-0-250828", "prompt": "一只橘猫"}
+// 面板里配 doubao-seedream-4-0-250828 → seedream-4.0 即按 Seedream 4.0 执行
+```
+
+| 规则 | 说明 |
+|---|---|
+| 解析顺序 | **用户重定向** → 内置对外 ID / 上游 key / 面板名 / slug |
+| 大小写 | 不敏感（存储归一化为小写） |
+| 链式 | 支持 A→B→模型，最多 4 跳；**成环直接 400** |
+| 遮蔽 | 不能把对外名设成内置模型名/工具名（如 `seedream-5.5`、`jimeng-hd`）—— 那会静默改掉老客户端的行为 |
+| 目标 | 必须是能力表里**现在能提交**的模型或后编辑工具；能力表变了导致目标失效时，面板标红 + 概览告警 |
+| 对外公布 | 别名会出现在 `GET /v1/models`（生成模型在 `data[]`，带 `alias_of`；工具在 `tools[]`），客户端不必猜拼写 |
+| 响应回显 | 传别名就回别名；任务行里存的仍是上游 key / 能力 id（成本与排障口径不变） |
+
+批量导入支持每行 `对外名 => 目标`（`->` / `→` / Tab 亦可），或直接粘 JSON。
+调用方不需要改代码，换模型只改这张表。
+
+### 4.2 后编辑工具（超清 / 细节修复 / 扩图）
+
+同一端点、同一套轮询，靠 `model` 选能力 —— **后编辑不需要 prompt**：
+
+```bash
+# 超清：把任意图放大加细节
+curl -s http://127.0.0.1:8300/v1/images/generations \
+  -H "Authorization: Bearer $KEY" -H "Content-Type: application/json" \
+  -d '{"model":"jimeng-hd","image":"https://…/a.jpg"}'
+
+# 普通超清：任意图（origin_image 必须是对象，见 docs/UPSTREAM-TOOLS.md §4.2.2）
+curl -s http://127.0.0.1:8300/v1/images/generations \
+  -H "Authorization: Bearer $KEY" -H "Content-Type: application/json" \
+  -d '{"model":"超清","image":"https://…/a.jpg"}'
+
+# 细节修复：只认账号已有作品，传 item:<item_id>:<history_id>
+#   这两个值**就在生成结果里**：每个产物都带 item_id 与 history_id
+#   {"url":"…","item_id":"7709905466289196350","history_id":"51910303526668"}
+#   ⚠️ item 引用绑账号：网关会锁定产出它的那个号，那个号不可用时**直接失败**
+#      而不是换号重试（detail_fix 用错号会失败且计费）
+curl -s http://127.0.0.1:8300/v1/images/generations \
+  -H "Authorization: Bearer $KEY" -H "Content-Type: application/json" \
+  -d '{"model":"jimeng-detail-fix","image":"item:7696399061636910361:47490120999948"}'
+
+# 扩图：ratio 与 scale 二选一（选了 ratio，scale 不参与）
+curl -s http://127.0.0.1:8300/v1/images/generations \
+  -H "Authorization: Bearer $KEY" -H "Content-Type: application/json" \
+  -d '{"model":"扩图","image":"https://…/a.jpg","ratio":"16:9"}'
+
+# 智能编辑：整图 + 描述（prompt 必填）
+curl -s http://127.0.0.1:8300/v1/images/generations \
+  -H "Authorization: Bearer $KEY" -H "Content-Type: application/json" \
+  -d '{"model":"智能编辑","image":"https://…/a.jpg","prompt":"把红色方块换成一只猫"}'
+
+# 可带画布标记（brush / arrow，坐标 0-1）
+#   ⚠️ 标记只是给模型看的视觉标注，**不约束编辑范围** —— 要精确控区用「局部重绘」
+-d '{"model":"智能编辑","image":"…","prompt":"把红色方块换成一只猫",
+     "markers":[{"type":"brush","points":[[0.42,0.70],[0.58,0.84]]}]}'
+```
+
+| 模型 | 能力 | 输入 | 状态 |
+|---|---|---|---|
+| `jimeng-hd`（别名 `超清`/`变清晰`/`超分`） | `normal_hd`，gen_type 13 | 上传图 / 作品引用 | **已实测**：1024→2048 出图，**未扣费**（2 次样本） |
+| `jimeng-detail-fix`（`细节修复`） | `super_resolution`，gen_type 2 | **仅**作品引用 | **已实测**：成功输出 1920×1920、未扣费；**带上传图会失败且计费**（所以入口锁死） |
+| `jimeng-pro-hd`（`智能超清`） | `pro_hd`，gen_type 35 | 上传图 | **已实测**：2K 实扣 19 积分，`resolution` 选 2k/4k/8k（同价） |
+| `jimeng-inpaint`（`局部重绘`） | `inpainting`（unified），gen_type 7 | 上传图 + **mask** | **已实测**：1 积分/4 张，只改蒙版区域 |
+| `jimeng-erase`（`消除笔`/`擦除`） | `inpainting_remove`（unified），gen_type 9 | 上传图 + **mask** | **已实测**：1 积分/1 张，只改蒙版区域 |
+| `jimeng-cutout`（`抠图`/`去背景`） | `saliency_seg` | 上传图 | **已实测**：免费、1.9s、返回透明底 PNG（**同步**，不进队列） |
+| `jimeng-outpaint`（`扩图`） | `outpainting`（unified），gen_type 8 | 上传图 | **已实测**：1 积分/4 张，`ratio=16:9` 输出 1820×1024 |
+| `jimeng-smart-edit`（`智能编辑`） | `smart_edit_v2`（unified_v2），gen_type 101 | 上传图 + **prompt**（可选 `markers`） | **已实测**：档位 1k~8k（价格随档位变：1.5k=4 积分、2k=6 积分），默认 1.5k |
+
+**交付形态：后编辑默认异步。** 在 `POST /v1/images/generations` 上不占连接等待，
+直接返回 `202 {"task_id","poll_url"}` —— 2K 超清实测 38.5s，4K/8K 更久，等到超时
+再降级会让「降级」变成常态。要同步就显式传 `"wait": 120`，或把运行参数
+`postedit_sync_wait` 调大（面板可改，0 = 不同步）。
+
+**智能编辑走另一套 v2 草稿**（`unified_generate_v2`，gen_type 101）：提示词挂在
+能力节点上、资源节点带**签名 URL**、多一个 `extra` 画布快照、`extend` 里多
+`root_model`；`prompt` 必填。`markers` 收 `brush` / `arrow` 两种画布元素
+（0-1 归一化坐标），但**它不约束编辑范围** —— 实测同一份 markers 下，
+prompt 写"把红色方块换成…"是局部、写"把标记的区域变成…"就整图重绘。
+要精确控区请用 `jimeng-inpaint`。细节见 [`docs/UPSTREAM-TOOLS.md`](docs/UPSTREAM-TOOLS.md) §4.5。
+
+后编辑族里 `mask` 的真实载体是 `resource_list` 的 `purpose`：`11`=原图、`12`=蒙版，
+蒙版是普通 PNG（**白=要改的区域，黑=保持**），与原图同尺寸。
+
+扩图**不需要 mask**，它的目标尺寸由 `ratio`/`scale` 推出，落到上游
+`option.out_painting` 的四边扩展浮点上（短边不动、长边按比例扩展）。
+
+**异步接口的硬约定**（与上游同构，改它等于破坏已接入的客户端）：
 
 | 事项 | 约定 |
 |---|---|
 | 创建响应 | **202 + 只有 `task_id`** —— 不带 `status`/`poll_url`/`created`：多一个字段客户端就会依赖它 |
 | 轮询状态码 | 运行中 **202**、终态 **200** —— 按「202 就是未完成」判会把已结束的请求读成还在跑 |
 | 终态词汇 | `succeeded` / `failure`（不是 `success`/`failed`）；失败也是 **200**，错误在 body 的 `error.code` |
-| 成功无产物 | 判 `failure` + `code:"empty_result"`，不拿空 `data[]` 冒充成功 |
+| 产物载体 | **只交付 `http(s)` URL**：`data[]` 里没有 `b64_json` 键，`url` 不以 `data:` 开头 |
+| 缓存与退避 | 创建与轮询一律 `Cache-Control: no-store`；运行中带 `Retry-After`（秒） |
+
+**错误只有一个信封**，同步与异步一致：
+
+```json
+{"error": {"code": "invalid_request", "message": "size 需形如 2048x2048"}}
+```
+
+只有 `code` 与 `message` 两个键 —— 不放 `kind`、`ret`、上游 errmsg。分层规则：
+
+| 面 | 看得到什么 |
+|---|---|
+| 客户端（`/v1/*`、`/async/*`） | 稳定错误码 + 固定文案；`message` 只说**客户端能改什么** |
+| 服务端（`/panel/api/*`、`tasks.error`、`upstream_logs`） | 上游原文、`ret`、`error_kind`、耗时 —— 排障用 |
+
+同步 / 请求级错误的码：
+
+| HTTP | code | 何时 |
+|---|---|---|
+| 400 | `invalid_request` | 本地校验失败 / 上游拒收 / 内容审核 |
+| 401 | `invalid_api_key` | 缺失或无效的 Bearer |
+| 402 | `insufficient_quota` | 该 Key 额度用尽 |
+| 403 | `permission_denied` | Key 无权执行 |
+| 404 | `not_found` | 任务不存在（含"不属于你"） |
+| 422 | `invalid_request` | 请求体格式错误（只回字段路径，**不回显 input**） |
+| 429 | `rate_limited` | 上游限流，带 `Retry-After` |
+| 500 | `internal_error` | 网关自身异常 |
+| 502 | `upstream_error` | 上游凭证失效 / 额度不足 / 风控 / 网络 |
+| 503 | `executor_unavailable` | 执行器不健康 |
+
+异步终态的失败码（`status:"failure"` 时）是另一套四型：
+
+| code | 含义 | 客户端该做什么 |
+|---|---|---|
+| `task_failed` | 上游生成失败 / 超时 / 网络中断 | 可重试 |
+| `invalid_request` | 参数或内容被上游拒绝 | 改请求，重试无用 |
+| `empty_result` | 上游标记成功但没产出图片 | 可重试（多为上游空跑） |
+| `carrier_unavailable` | 上游只回了内联图片（b64 / data URI） | 重试无用，需换渠道 |
+
+这四个码的 `message` 是**固定字符串**：`ret=…`、上游 errmsg、失败星灵 key
+都不会出现在里面。
+
+以下字段被收下，但**没有对应能力，不要指望生效**：
+
+- `response_format`：即梦不提供 b64 交付，同步与异步恒为 `url`。传 `b64_json`
+  照常受理、不报错 —— 不因一个无法兑现的传输偏好否掉一次可满足的生成，
+  但拿回来的仍是链接。
+- `mask`：**局部重绘需要它**（白=重绘区域、黑=保持，与原图同尺寸）。
+  其它能力不消费 mask，传了不会报错，但 `degradations` 会写「不消费 mask，
+  该字段未下发上游」—— 静默丢弃会让调用方以为局部重绘生效了。文生图 / 图生图路径仍按"无此参数"丢弃。
+
+`n` 不设死上限：由能力表的张数选项吸附到最近的合法档位，`n ≤ 0` 回落 1。
+**吸附结果不返回给客户端** —— 那是运营细节（"该模型无 4k 档，改用 2k"），
+只写进任务行，面板任务详情可见。同步端点超时降级成异步时，`status` 用**同一套
+客户端词汇**（`in_progress`），不会在换端点时冒出一个内部的 `running`。
 
 `id` 与 `task_id` 同值、**只出现在轮询响应**，为按 `id` 解析的老客户端保留。
 
-尺寸会**吸附**到上游的 8 个比例槽与分辨率桶；任何"请求了 A、实际做 B"都写进
-响应的 `degradations`，不静默降级。
+`/v1/credits` 只回**本 Key** 的额度（`quota` / `used` / `remaining`）；
+池子里有几个账号、各剩多少属于运维数据，只对管理员 Key 返回。
+
+同一原则适用于能力清单：`/v1/models` 的 `id` 是**对外别名**，不返回上游
+`model_req_key`，也不返回 `prices`（上游积分单价）与 `live` / `source`
+（能力表是否实时读取）。后编辑清单同样只留 `id` / `name` / `kind` / `input` /
+`resolutions` / `needs_mask` / `ratios` / `scales` —— `ability` / `gen_type` /
+`shape` / `notes` 是草稿构造细节与取证记录。排障要的全量视图在
+`/panel/api/models` 的 `tools[]`（含这些内部字段与逐条取证 `notes`），
+面板的「模型与档位」页会把它们渲染成表。
 
 ---
 
@@ -233,7 +390,8 @@ POST /v1/images/generations
 1. **受理不碰上游。** 建任务是计费动作，必须在有闸门、能重试、能调度账号的地方做。
 2. **在途数放在库里数。** `SELECT COUNT(*) WHERE status IN ('submitting','running')`，
    不用内存信号量 —— 进程重启后信号量归零会让上游被超发。
-3. **降级必须可见。** 张数吸附、分辨率降档、比例吸附都进 `degradations`。
+3. **降级必须可见，但只对运维可见。** 张数吸附、分辨率降档、比例吸附都进
+   `degradations` 并落库；客户端响应里一个字段都不出现。
 4. **失败不重发。** 只有上游**明确拒绝**（`1015` / 额度 / 限流 / 风控）才换号重试；
    网络错误/超时一律判"结果未知"，宁可报错也不让同一 prompt 扣两次。
 5. **成败只看 `task.status`。** `ret=0` 只代表"请求被受理"；`status=30` 照样计费。
@@ -282,6 +440,16 @@ POST /v1/images/generations
   而不加一层前置认证（nginx `auth_basic` 或 IP 白名单）。
 - SQLite 适合单机单实例。协调器不能多副本 —— 多副本会双提交，这是计费事故，
   不是性能问题。
+- **同一份数据库只能有一个服务在跑，端口不同也算多副本**。2026-11-19 实测踩到：
+  8300 与 8322 两个服务共用 `data/jimeng2api.db`，队列里的任务被**旧代码的那个进程**
+  抢走，于是用别的分支提交并报出一个与当前代码无关的错（`prompt 不能为空`）。
+  排查手法：
+  ```bash
+  lsof -nP -iTCP:8300-8399 -sTCP:LISTEN          # 谁在监听
+  lsof -a -p <pid> -d cwd -Fn                     # 它跑的是哪个目录
+  ```
+  表现特征是「任务行明明存在，但错误信息来自另一条分支」—— 那不是代码 bug，
+  先数进程。
 - **sessionid 在库里是明文**（要用它换上游请求，必须可逆）。保护手段是文件系统权限
   与部署边界，不是应用层加密：面板从不回显完整值，导出/备份数据库时按密钥对待。
 - 上传的垫图会留在即梦账号的素材库（`image_uri` 不是内容寻址，同一张图传两次是两个
@@ -333,8 +501,11 @@ app/
     client.py        # 唯一 HTTP 收缝
     upload.py        # ImageX 四段式 + AWS4 签名
 web/                 # 面板（无构建步骤）
-scripts/seed_demo.py # 演示数据（仅本地预览，会清空表）
-tests/               # 28 项：签名向量、草稿形态、API 鉴权、任务生命周期、cookie 解析
+scripts/
+  seed_demo.py       # 演示数据（仅本地预览，会清空表）
+  capability_audit.py # 能力自检：零请求，验草稿结构与取证是否一致
+  postedit_probe.py  # 后编辑探针：默认 dry-run，双闸门才真提交
+tests/               # 122 项：签名向量、草稿逐字段对拍、API 鉴权、任务生命周期
 ```
 
 ---

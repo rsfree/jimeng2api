@@ -20,12 +20,15 @@ import time
 from pathlib import Path
 
 from fastapi import FastAPI, Request, WebSocket, WebSocketDisconnect
+from fastapi.exceptions import RequestValidationError
 from fastapi.responses import FileResponse, JSONResponse, Response
 from fastapi.staticfiles import StaticFiles
+from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from . import api, db, panel_api, remote_browser, security
 from .config import settings
 from .coordinator import coordinator
+from .public_errors import HTTP_CODES, error_body, public_error
 from .upstream.errors import JimengError
 
 WEB = Path(__file__).resolve().parent.parent / "web"
@@ -184,17 +187,52 @@ def create_app() -> FastAPI:
         response.headers.setdefault("x-frame-options", "DENY")
         return response
 
+    # ----------------------------------------------- 错误：客户端面只出标准码
     @app.exception_handler(JimengError)
     async def jimeng_error_handler(_: Request, exc: JimengError) -> JSONResponse:
-        code = 401 if exc.kind == "auth" else 400 if exc.kind == "param" else 502
-        return JSONResponse(status_code=code, content={
-            "error": {"message": str(exc), "kind": exc.kind,
-                      "ret": getattr(exc, "ret", None)}})
+        status, code, message = public_error(exc)
+        # 原生错误只进服务端日志（含 ret / errmsg）；客户端拿不到其中任何一个字。
+        # 归因按「谁的错」翻：上游凭证失效是 502，不是 401 —— 客户端没写错。
+        log.warning("业务异常：kind=%s ret=%s %s",
+                    exc.kind, getattr(exc, "ret", None), exc)
+        headers = {"Retry-After": "30"} if status == 429 else None
+        return JSONResponse(status_code=status,
+                            content=error_body(code, message), headers=headers)
+
+    @app.exception_handler(StarletteHTTPException)
+    async def http_error(_: Request, exc: StarletteHTTPException) -> JSONResponse:
+        """鉴权 / 路由类错误的统一信封。
+
+        `detail` 是我们自己写的标准文案（"缺少 Bearer Key"），可以给客户端；
+        内部枚举（old：kind/ret）一律不进 body。
+        """
+        code = HTTP_CODES.get(exc.status_code, "internal_error")
+        return JSONResponse(status_code=exc.status_code,
+                            content=error_body(code, str(exc.detail)),
+                            headers=dict(exc.headers or {}))
+
+    @app.exception_handler(RequestValidationError)
+    async def validation_error(_: Request,
+                               exc: RequestValidationError) -> JSONResponse:
+        """422 只回字段路径，**绝不回显 input**。
+
+        pydantic 的默认错误体带 `input`：客户端传一个 data URI 垫图时，
+        几 MB 的 base64 会被原样抄回响应；既是带宽浪费，也是把客户数据
+        又复制了一份到日志和浏览器里。
+        """
+        fields = []
+        for err in exc.errors():
+            loc = [str(x) for x in (err.get("loc") or []) if x != "body"]
+            if loc:
+                fields.append(".".join(loc))
+        names = ", ".join(sorted(set(fields))[:6]) or "body"
+        return JSONResponse(status_code=422, content=error_body(
+            "invalid_request", f"请求参数格式错误：{names}"))
 
     @app.exception_handler(Exception)
     async def unhandled(_: Request, exc: Exception) -> JSONResponse:
         log.exception("未处理异常：%s", exc)
         return JSONResponse(status_code=500,
-                            content={"error": {"message": "internal error"}})
+                            content=error_body("internal_error", "网关内部错误"))
 
     return app

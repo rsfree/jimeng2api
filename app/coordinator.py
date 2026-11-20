@@ -31,6 +31,9 @@ class Coordinator:
         self.ticks = 0
         self.last_tick_at = 0.0
         self.last_error = ""
+        #: 连续失败的 tick 数。tick 失败**也会**刷新 last_tick_at（否则一次
+        #: 偶发异常就会被当成假死），所以心跳抓不到"每轮都失败"——只能单独计数。
+        self.fail_streak = 0
 
     @property
     def running(self) -> bool:
@@ -57,8 +60,10 @@ class Coordinator:
             try:
                 await asyncio.to_thread(self._tick)
                 self.last_error = ""
+                self.fail_streak = 0
             except Exception as e:  # noqa: BLE001 - 单次 tick 失败不能杀死循环
                 self.last_error = f"{type(e).__name__}: {e}"
+                self.fail_streak += 1
                 log.exception("协调器 tick 失败")
             self.ticks += 1
             self.last_tick_at = time.time()
@@ -81,6 +86,9 @@ class Coordinator:
                 try:
                     service.submit_task(task)
                 except Exception as e:  # noqa: BLE001
+                    # 只把 str(e) 写进任务行会让"division by zero"这类错误
+                    # 完全失去定位信息 —— 堆栈必须进日志。
+                    log.exception("任务提交失败 task=%s", task["id"])
                     repo.mark_task_failed(task["id"], f"提交异常：{e}", "unknown")
 
         # 2) 轮询在途任务（合并查询，一次拿一批）

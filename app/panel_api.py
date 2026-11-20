@@ -11,6 +11,8 @@
 from __future__ import annotations
 
 import base64
+import json
+import sqlite3
 import time
 from typing import Any
 
@@ -18,6 +20,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query, Response
 from pydantic import BaseModel, Field
 
 from . import db, login_assistant, models, pool as pool_mod, remote_browser, repo, service
+from .upstream import postedit
 from .config import settings
 from .coordinator import coordinator
 from .security import require_admin
@@ -89,12 +92,31 @@ class SettingsPatch(BaseModel):
     poll_interval: float | None = Field(default=None, ge=0.5, le=60)
     task_timeout: int | None = Field(default=None, ge=60, le=86400)
     sync_timeout: int | None = Field(default=None, ge=10, le=900)
+    postedit_sync_wait: int | None = Field(default=None, ge=0, le=900)
     default_model: str | None = None
     cooldown_rate: int | None = Field(default=None, ge=10, le=3600)
     cooldown_risk: int | None = Field(default=None, ge=60, le=86400)
     max_retry: int | None = Field(default=None, ge=0, le=5)
     credit_low_threshold: int | None = Field(default=None, ge=0, le=100000)
     models_live_refresh: int | None = Field(default=None, ge=0, le=86400)
+
+
+class RedirectReq(BaseModel):
+    alias: str = ""
+    target: str = ""
+    note: str = ""
+    enabled: bool = True
+
+
+class RedirectPatch(BaseModel):
+    target: str | None = None
+    note: str | None = None
+    enabled: bool | None = None
+
+
+class RedirectImportReq(BaseModel):
+    text: str = ""
+    overwrite: bool = False
 
 
 # ------------------------------------------------------------------ 登录/概览
@@ -131,6 +153,12 @@ def _alerts(acc: dict, reg: models.Registry) -> list[dict]:
                     "text": f"能力表已 {hours} 小时未刷新（上游改动可能导致选错模型）"})
     if settings.coordinator_enabled and not coordinator.running:
         out.append({"level": "bad", "text": "协调器未运行：任务不会被执行"})
+    broken = [r for r in service.redirect_views(reg) if not r["ok"]]
+    if broken:
+        # 重定向目标随能力表变化会失效；不告警的话，只有调用方 400 时才会发现
+        out.append({"level": "bad",
+                    "text": f"{len(broken)} 条模型重定向的目标已失效"
+                            "（能力表变更？）"})
     return out
 
 
@@ -545,10 +573,26 @@ def usage(days: int = Query(7, ge=1, le=30)) -> dict:
 
 
 # --------------------------------------------------------------- 模型/配置
+def _models_payload(reg: models.Registry) -> dict:
+    """面板「模型与档位」的完整载荷。
+
+    GET 与「重新读取能力表」必须返回**同一形状**：少了 redirects，
+    刷新一次页面就会把重定向区块渲染成空，运维会以为配置丢了。
+    """
+    # tools 是后编辑能力表（含内部标识）。不加它，运维在面板上只看到上游的
+    # 22 个生成模型，完全看不到超清/重绘/消除笔这些工具 —— 出了问题无从查起。
+    return reg.to_dict() | {
+        "default_model": repo.runtime_config()["default_model"],
+        "tools": postedit.panel_models(),
+        "unsupported": dict(postedit.UNSUPPORTED),
+        "redirects": service.redirect_views(reg),
+        "redirect_targets": service.redirect_target_options(reg),
+    }
+
+
 @router.get("/models")
 def model_list() -> dict:
-    reg = pool_mod.registry()
-    return reg.to_dict() | {"default_model": repo.runtime_config()["default_model"]}
+    return _models_payload(pool_mod.registry())
 
 
 @router.post("/models/refresh")
@@ -557,7 +601,148 @@ def refresh_models() -> dict:
         reg = pool_mod.pool.refresh_models(force=True)
     except Exception as e:  # noqa: BLE001
         raise HTTPException(502, f"读取上游能力表失败：{e}") from e
-    return reg.to_dict() | {"default_model": repo.runtime_config()["default_model"]}
+    return _models_payload(reg)
+
+
+# ------------------------------------------------------------ 模型重定向
+def _parse_redirect_text(text: str) -> list[dict]:
+    """批量导入的解析：JSON（对象 / 数组）或每行 `别名 => 目标`。
+
+    分隔符收 `=>` / `->` / `→` / Tab —— 这四种是运维从文档、聊天记录里
+    粘过来时最常见的形态；逗号不做分隔符（模型名里合法，会切错）。
+    """
+    raw = (text or "").strip()
+    if not raw:
+        return []
+    if raw[:1] in "[{":
+        try:
+            data = json.loads(raw)
+        except ValueError:
+            data = None
+        if isinstance(data, dict):
+            return [{"alias": str(k), "target": str(v)}
+                    for k, v in data.items()]
+        if isinstance(data, list):
+            out: list[dict] = []
+            for x in data:
+                if isinstance(x, dict):
+                    out.append({"alias": str(x.get("alias") or ""),
+                                "target": str(x.get("target") or ""),
+                                "note": str(x.get("note") or "")})
+                else:
+                    out.append({"raw": str(x)})
+            return out
+    rows: list[dict] = []
+    for line in raw.splitlines():
+        line = line.strip()
+        if not line or line.startswith("#"):
+            continue
+        for sep in ("=>", "->", "→", "\t"):
+            if sep in line:
+                a, t = line.split(sep, 1)
+                rows.append({"alias": a.strip(), "target": t.strip()})
+                break
+        else:
+            rows.append({"raw": line})
+    return rows
+
+
+@router.get("/model-redirects")
+def list_model_redirects() -> dict:
+    reg = pool_mod.registry()
+    return {"items": service.redirect_views(reg),
+            "targets": service.redirect_target_options(reg)}
+
+
+@router.post("/model-redirects")
+def create_model_redirect(req: RedirectReq) -> dict:
+    reg = pool_mod.registry()
+    v = service.validate_redirect(req.alias, req.target, reg=reg)
+    if repo.redirect_by_alias(v["alias"]):
+        raise HTTPException(
+            409, f"{v['alias']} 已经配置过；要改目标请直接编辑那一条")
+    try:
+        rid = repo.create_redirect(v["alias"], v["target"], req.note.strip(),
+                                   req.enabled)
+    except sqlite3.IntegrityError as e:
+        # 两个面板请求同时提交同一个别名：预检查有窗口，唯一索引是最终裁判
+        raise HTTPException(409, f"{v['alias']} 已经配置过") from e
+    return {"ok": True, "item": service.redirect_view(rid, reg),
+            "items": service.redirect_views(reg)}
+
+
+@router.patch("/model-redirects/{rid}")
+def patch_model_redirect(rid: int, req: RedirectPatch) -> dict:
+    row = repo.get_redirect(rid)
+    if not row:
+        raise HTTPException(404, "重定向不存在")
+    fields: dict[str, Any] = {}
+    if req.note is not None:
+        fields["note"] = req.note.strip()
+    if req.enabled is not None:
+        fields["enabled"] = 1 if req.enabled else 0
+    if req.target is not None:
+        # 别名已入库：即使能力表后来新增了同名模型，改目标也不该被"遮蔽"拦住
+        fields["target"] = service.validate_redirect(
+            row["alias"], req.target, check_alias=False)["target"]
+    repo.update_redirect(rid, **fields)
+    return {"ok": True, "items": service.redirect_views()}
+
+
+@router.delete("/model-redirects/{rid}")
+def delete_model_redirect(rid: int) -> dict:
+    if not repo.get_redirect(rid):
+        raise HTTPException(404, "重定向不存在")
+    repo.delete_redirect(rid)
+    return {"ok": True, "items": service.redirect_views()}
+
+
+@router.post("/model-redirects/import")
+def import_model_redirects(req: RedirectImportReq) -> dict:
+    """批量导入。逐行独立成败 —— 一行写错不影响其余行。"""
+    rows = _parse_redirect_text(req.text)
+    if not rows:
+        raise HTTPException(400, "没有可导入的行")
+    if len(rows) > 500:
+        raise HTTPException(400, "单次最多 500 行")
+    reg = pool_mod.registry()
+    created = updated = 0
+    items: list[dict] = []
+    for idx, row in enumerate(rows, 1):
+        label = row.get("alias") or row.get("raw") or ""
+        if "raw" in row:
+            items.append({"line": idx, "alias": label, "ok": False,
+                          "error": "缺少分隔符（用 `别名 => 目标`）"})
+            continue
+        try:
+            v = service.validate_redirect(
+                row["alias"], row["target"], reg=reg)
+        except JimengError as e:      # 逐行错误原样回报给运维
+            items.append({"line": idx, "alias": label, "ok": False,
+                          "error": str(e)})
+            continue
+        exist = repo.redirect_by_alias(v["alias"])
+        if exist and not req.overwrite:
+            items.append({"line": idx, "alias": v["alias"], "ok": False,
+                          "error": "已存在（勾选覆盖才会更新）"})
+            continue
+        if exist:
+            repo.update_redirect(exist["id"], target=v["target"],
+                                 note=row.get("note") or exist["note"])
+            updated += 1
+        else:
+            try:
+                repo.create_redirect(v["alias"], v["target"],
+                                     row.get("note") or "")
+            except sqlite3.IntegrityError:
+                items.append({"line": idx, "alias": v["alias"], "ok": False,
+                              "error": "已存在（并发写入）"})
+                continue
+            created += 1
+        items.append({"line": idx, "alias": v["alias"], "ok": True,
+                      "target": v["public"], "error": ""})
+    return {"created": created, "updated": updated, "items": items,
+            "redirects": service.redirect_views(reg)}
 
 
 @router.get("/settings")

@@ -21,7 +21,7 @@ from typing import Any, Callable, Sequence
 
 import httpx
 
-from . import protocol
+from . import postedit, protocol
 from .errors import (JimengError, JimengNetworkError, raise_for_ret)
 from .sign import sign_headers
 
@@ -31,6 +31,8 @@ PATH_COMMON_CONFIG = "/mweb/v1/get_common_config"
 PATH_IMAGE_BY_URI = "/mweb/v1/get_image_by_uri"
 PATH_UPLOAD_TOKEN = "/mweb/v1/get_upload_token"
 PATH_USER_INFO = "/mweb/v1/get_user_info"
+PATH_WORKSPACE_LIST = "/mweb/v1/workspace/list"
+PATH_SALIENCY_SEG = "/mweb/v1/saliency_seg"
 PATH_CREDIT = "/commerce/v1/benefits/user_credit"
 PATH_CREDIT_HISTORY = "/commerce/v1/benefits/user_credit_history"
 
@@ -220,6 +222,24 @@ class JimengClient:
             "needCache": "true", "needRefresh": "false",
         }).get("data") or {}
 
+    def saliency_seg(self, uris: Sequence[str], mode: str = "canvas") -> list[dict]:
+        """主体分割（抠图）。**免费**，返回 `[{mask: {uri, url}}]`。
+
+        实测（2026-11-19）：`mask.url` 是 RGBA PNG，**alpha 通道即蒙版** ——
+        主体保留原色、背景 alpha=0，直接就是透明底结果，不需要二次合成。
+        """
+        lst = [u for u in ([uris] if isinstance(uris, str) else list(uris)) if u]
+        if not lst:
+            return []
+        data = self._post(PATH_SALIENCY_SEG,
+                          {"image_uri_list": lst, "mode": mode}).get("data")
+        return list(data or [])
+
+    def workspaces(self) -> list[dict]:
+        """账号工作区列表（免费只读）。`pro_hd` 的 `extend.workspace_id` 取这里。"""
+        data = self._post(PATH_WORKSPACE_LIST, {}).get("data") or {}
+        return list(data.get("workspaces") or [])
+
     def image_by_uri(self, uris: str | Sequence[str]) -> dict[str, dict]:
         lst = [uris] if isinstance(uris, str) else list(uris)
         lst = [u for u in lst if u]
@@ -229,6 +249,22 @@ class JimengClient:
         return d.get("uri2image") or {}
 
     # --------------------------------------------------------------- 计费写
+    def submit_postedit(self, *, ability: postedit.Ability, source: dict,
+                        submit_id: str, resolution: str = "2k",
+                        count: int = 1, extra: dict | None = None,
+                        workspace_id: str = "", prompt: str = "") -> str:
+        """后编辑提交（智能超清 / 超清 / 细节修复 / 扩图）。
+
+        与 t2i/i2i 共用 `/mweb/v1/aigc_draft/generate`，差别全在草稿与 `extend`。
+        `pro_hd` 的草稿形态来自 2026-11-19 的真实抓包（docs/evidence/）。
+        """
+        body = postedit.build_submit_body(
+            ability=ability, source=source, submit_id=submit_id, aid=int(self.aid),
+            resolution=resolution, count=count, extra=extra,
+            workspace_id=workspace_id, prompt=prompt)
+        self._post(PATH_SUBMIT, body, task_id=submit_id)
+        return submit_id
+
     def submit_t2i(self, *, prompt: str, model: str, count: int, width: int,
                    height: int, submit_id: str, seed: int | None = None,
                    negative_prompt: str = "",

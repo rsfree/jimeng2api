@@ -106,7 +106,11 @@
     let data = null;
     try { data = await res.json(); } catch { data = null; }
     if (!res.ok) {
-      const msg = (data && (data.detail || data.error || data.message)) || ('HTTP ' + res.status);
+      // 网关的错误信封是 {error:{code,message}}；直接 JSON.stringify 会把
+      // "sessionid 已在池子里" 变成一串对象，运维看不出发生了什么。
+      const msg = (data && (data.detail
+        || (data.error && (data.error.message || data.error.code))
+        || data.message)) || ('HTTP ' + res.status);
       const err = new Error(typeof msg === 'string' ? msg : JSON.stringify(msg));
       err.status = res.status;
       throw err;
@@ -616,6 +620,66 @@
     if (!S.play.count) S.play.count = m.default_count || 1;
   }
 
+  // --------------------------------------------- 模型重定向（对外名 → 内部）
+  function renderRedirects(d) {
+    const rows = d.redirects || [];
+    const targets = d.redirect_targets || [];
+    const on = rows.filter((r) => r.enabled && r.ok).length;
+    const bad = rows.filter((r) => !r.ok);
+    const opts = targets.map((t) =>
+      `<option value="${esc(t.value)}">${esc(t.label)}</option>`).join('');
+    const table = rows.length ? `
+      <div class="table-wrap"><table class="tbl">
+        <thead><tr><th>对外模型名</th><th>落点</th><th>状态</th><th>备注</th><th></th></tr></thead>
+        <tbody>${rows.map((r) => {
+          const shown = r.public || r.target;
+          // 落点下面那行只放**与落点不同**的信息：配置值 / 解析链 / 上游 key。
+          // 全部相同就留空 —— 重复两遍同一串字符只会让人以为看错了列。
+          const detail = (r.target !== shown)
+            ? r.target + ((r.resolved && r.resolved !== r.target) ? ' → ' + r.resolved : '')
+            : ((r.kind === 'model' && r.key && r.key !== shown) ? r.key : '');
+          return `<tr>
+          <td><div class="cell-2"><code class="strong">${esc(r.alias)}</code>
+            <span class="s">${r.kind === 'postedit' ? '后编辑工具' : r.kind === 'model' ? '生成模型' : '—'}</span></div></td>
+          <td><div class="cell-2"><span>${esc(shown)}</span>
+            <span class="s">${esc(detail) || '—'}</span></div></td>
+          <td class="nowrap">${!r.enabled ? '<span class="tag mute">已停用</span>'
+            : r.ok ? '<span class="tag ok">生效</span>'
+              : '<span class="tag bad">目标失效</span>'}</td>
+          <td class="muted">${esc(r.note) || '—'}</td>
+          <td class="nowrap">
+            <button class="btn xs" data-act="redirect-toggle" data-id="${r.id}" data-on="${r.enabled ? 1 : 0}">${r.enabled ? '停用' : '启用'}</button>
+            <button class="btn xs ghost danger" data-act="redirect-del" data-id="${r.id}" data-alias="${esc(r.alias)}">删除</button>
+          </td></tr>`;
+        }).join('')}</tbody></table></div>`
+      : `<div class="hint-card">尚未配置。添加后，调用方可以直接用它熟悉的官方模型名请求，由网关映射到本网关模型。</div>`;
+    return `
+      <div class="box">
+        <header><h3>模型重定向<span class="hint">调用方模型名 → 本网关模型 · 大小写不敏感</span></h3>
+          <span class="grow"></span><span class="note">${rows.length} 条 · 生效 ${on}</span>
+          <button class="btn xs" data-act="redirect-import">批量导入</button></header>
+        <div class="pad">
+          <div class="row" style="margin-bottom:10px">
+            <input class="input" id="redirAlias" style="flex:1;min-width:240px" placeholder="对外模型名，如 gpt-image-1">
+            <span class="note">→</span>
+            <select class="select" id="redirTarget" style="min-width:260px">${opts}</select>
+            <input class="input" id="redirNote" style="width:150px" placeholder="备注（可选）">
+            <button class="btn primary" data-act="redirect-add">添加</button>
+          </div>
+          <div class="row" style="margin-bottom:12px">
+            <span class="note">官方命名示例：</span>
+            <button class="btn xs ghost" data-act="redirect-fill" data-id="doubao-seedream-4-0-250828">火山方舟</button>
+            <button class="btn xs ghost" data-act="redirect-fill" data-id="gpt-image-1">OpenAI</button>
+            <button class="btn xs ghost" data-act="redirect-fill" data-id="imagen-4.0-generate-001">Google</button>
+            <span class="note">点一下填入输入框，落点按需选择</span>
+          </div>
+          ${table}
+          ${bad.length ? `<div class="hint-card neg" style="margin-top:10px">${bad.map((r) =>
+            `<code>${esc(r.alias)}</code>：${esc(r.error)}`).join('<br>')}</div>` : ''}
+        </div>
+      </div>`;
+  }
+
   function renderModels() {
     const d = S.models;
     if (!d) { $('#view').innerHTML = empty('加载中…'); return; }
@@ -651,6 +715,33 @@
               <td class="num">${m.max_images || '—'}</td>
             </tr>`).join('')}</tbody></table></div>
       </div>
+
+      ${renderRedirects(d)}
+
+      ${(d.tools && d.tools.length) ? `
+      <div class="box">
+        <header><h3>后编辑工具<span class="hint">同一端点，靠 model 选能力</span></h3>
+          <span class="grow"></span>
+          <span class="note">${d.tools.length} 项 · 面板可见内部标识，客户端不可见</span></header>
+        <div class="table-wrap"><table class="tbl">
+          <thead><tr><th>模型</th><th>形态</th><th>ability_code</th><th class="num">gen_type</th>
+          <th>输入</th><th>档位 / 比例</th><th class="num">mask</th></tr></thead>
+          <tbody>${d.tools.map((t) => `
+            <tr>
+              <td><div class="cell-2"><span class="strong">${esc(t.name)}</span>
+                <span class="s"><code>${esc(t.id)}</code></span></div></td>
+              <td class="nowrap"><span class="tag">${esc(t.shape)}</span></td>
+              <td class="nowrap"><code>${esc(t.ability_code || t.ability)}</code></td>
+              <td class="num">${t.gen_type == null ? '—' : esc(String(t.gen_type))}</td>
+              <td class="nowrap">${esc(t.input)}</td>
+              <td class="nowrap">${((t.resolutions || []).map((r) => `<span class="tag">${esc(r)}</span>`).join(' ')
+                + ((t.ratios || []).map((r) => `<span class="tag accent">${esc(r)}</span>`).join(' '))) || '—'}</td>
+              <td class="num">${t.needs_mask ? '要' : '—'}</td>
+            </tr>`).join('')}</tbody></table></div>
+        ${(d.unsupported && Object.keys(d.unsupported).length)
+          ? `<div class="pad note">未接入：${Object.keys(d.unsupported).map(esc).join('、')}</div>`
+          : '<div class="pad note">8 项能力全部接入</div>'}
+      </div>` : ''}
 
       <div class="box">
         <header><h3>试玩 / 构造草稿<span class="hint">默认 dry-run：不请求上游、不计费</span></h3>
@@ -970,7 +1061,7 @@
           ${t.error_kind ? `<span class="tag bad">${esc(t.error_kind)}</span>` : ''}
           <span class="grow"></span><span class="note">${esc(t.id)}</span></div>
         <dl class="kv">
-          <dt>模型</dt><dd>${esc(t.model)} · ${esc(t.mode)}</dd>
+          <dt>模型</dt><dd>${esc(t.model)} · ${esc(t.mode)}${(t.extras && t.extras.requested_model) ? ` <span class="tag accent">请求名 ${esc(t.extras.requested_model)}</span>` : ''}</dd>
           <dt>尺寸</dt><dd>${esc(t.size)} × ${t.count} 张 · ${esc(t.resolution)}</dd>
           <dt>账号</dt><dd>${t.account_id ? '#' + t.account_id : '尚未分配'}</dd>
           <dt>创建</dt><dd>${fmtTime(t.created_at, true)}</dd>
@@ -1383,6 +1474,84 @@ playwright install chromium</pre>
       try { await api(`/keys/${id}`, { method: 'DELETE' }); S.keys = await api('/keys'); renderView(); toast('已删除', 'ok'); }
       catch (e) { toast(e.message, 'bad'); }
     }, '删除'),
+    'redirect-add': async () => {
+      const aliasEl = $('#redirAlias');
+      const alias = (aliasEl ? aliasEl.value : '').trim();
+      if (!alias) { toast('请填写对外模型名', 'bad'); return; }
+      const targetEl = $('#redirTarget');
+      const noteEl = $('#redirNote');
+      try {
+        await api('/model-redirects', {
+          method: 'POST',
+          body: {
+            alias,
+            target: targetEl ? targetEl.value : '',
+            note: noteEl ? noteEl.value.trim() : '',
+          },
+        });
+        S.models = await api('/models'); renderView(); toast('已添加', 'ok');
+      } catch (e) { toast(e.message, 'bad'); }
+    },
+    'redirect-fill': (alias) => {
+      const el = $('#redirAlias');
+      if (el) { el.value = alias || ''; el.focus(); }
+    },
+    'redirect-toggle': async (id, el) => {
+      const on = el.dataset.on === '1';
+      try {
+        await api(`/model-redirects/${id}`, { method: 'PATCH', body: { enabled: !on } });
+        S.models = await api('/models'); renderView();
+        toast(on ? '已停用' : '已启用', 'ok');
+      } catch (e) { toast(e.message, 'bad'); }
+    },
+    'redirect-del': (id, el) => confirmDialog(
+      `删除后调用方再传 <code>${esc(el.dataset.alias || '')}</code> 会得到「未知模型」。`,
+      async () => {
+        try {
+          await api(`/model-redirects/${id}`, { method: 'DELETE' });
+          S.models = await api('/models'); renderView(); toast('已删除', 'ok');
+        } catch (e) { toast(e.message, 'bad'); }
+      }, '删除'),
+    'redirect-import': () => {
+      openDialog({
+        title: '批量导入模型重定向',
+        wide: true,
+        body: `<div class="field"><label>每行一条：<code>对外名 =&gt; 目标</code></label>
+          <textarea class="textarea" id="redirBulk" style="min-height:160px" placeholder="# 也支持 JSON：{&quot;gpt-image-1&quot;:&quot;seedream-5.5&quot;}&#10;gpt-image-1 => seedream-5.5&#10;doubao-seedream-4-0-250828 => seedream-4.0"></textarea>
+          <span class="hint">分隔符支持 <code>=&gt;</code> / <code>-&gt;</code> / <code>→</code> / Tab；<code>#</code> 开头为注释。
+          目标可以填对外模型名、上游 key 或后编辑工具 id（如 <code>jimeng-hd</code>）。</span></div>
+          <label class="check"><input type="checkbox" id="redirOverwrite"> 覆盖已存在的同名配置</label>`,
+        okText: '导入',
+        onOk: async () => {
+          const box = $('#redirBulk');
+          const text = box ? box.value.trim() : '';
+          if (!text) { toast('请粘贴配置', 'bad'); return false; }
+          try {
+            const r = await api('/model-redirects/import', {
+              method: 'POST',
+              body: { text, overwrite: $('#redirOverwrite').checked },
+            });
+            S.models = await api('/models');
+            renderView();          // 结果弹窗盖在上面，底下的表也要同步
+            dlg().close();
+            const bad = (r.items || []).filter((x) => !x.ok);
+            openDialog({
+              title: '导入结果',
+              body: `<div class="row" style="margin-bottom:12px">
+                  <span class="tag ok">新增 ${r.created}</span>
+                  <span class="tag accent">更新 ${r.updated}</span>
+                  <span class="tag ${bad.length ? 'bad' : 'mute'}">失败 ${bad.length}</span></div>
+                ${bad.length
+                  ? `<div class="hint-card neg">${bad.map((x) =>
+                      `第 ${x.line} 行 <code>${esc(x.alias)}</code>：${esc(x.error)}`).join('<br>')}</div>`
+                  : '<div class="hint-card">全部写入成功。</div>'}`,
+              okText: '完成', onOk: () => true,
+            });
+          } catch (e) { toast(e.message, 'bad'); return false; }
+          return false;
+        },
+      });
+    },
     'refresh-models': async () => {
       toast('读取上游能力表…');
       try { S.models = await api('/models/refresh', { method: 'POST' }); renderView(); toast('已更新', 'ok'); }

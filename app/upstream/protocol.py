@@ -259,6 +259,9 @@ def parse_task(submit_id: str, node: dict) -> dict:
         "cost": _pick(node, "forecast_generate_cost"),
         "fail_message": "",
         "images": [],
+        # 作品引用的两半：`item_id` + `history_id`。detail_fix / jimeng-hd 的
+        # `item:<item_id>:<history_id>` 就是用它拼的 —— 不落地，用户只能去 UI 翻。
+        "history_id": str(_pick(node, "history_record_id") or "") or None,
         "total": _pick(node, "total_image_count"),
         "finished_count": _pick(node, "finished_image_count"),
     }
@@ -289,6 +292,9 @@ def parse_task(submit_id: str, node: dict) -> dict:
                 "url": url, "width": w, "height": h,
                 "format": fmt or img.get("format") or "png",
                 "item_id": (it.get("common_attr") or {}).get("id"),
+                # 冗余一份到产物里：客户端拿着这一项就能直接拼
+                # `item:<item_id>:<history_id>` 调「细节修复」，不用回头找任务级字段
+                "history_id": out["history_id"],
                 "uri": img.get("image_uri") or "",
                 "note": note,
             })
