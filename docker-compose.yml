@@ -5,7 +5,7 @@ services:
       args:
         # 需要「扫码登录」时改成 1（镜像 +300MB）
         WITH_LOGIN: ${WITH_LOGIN:-0}
-    image: jimeng2api:0.1.2
+    image: jimeng2api:0.1.3
     container_name: jimeng2api
     restart: unless-stopped
     ports:
