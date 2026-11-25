@@ -26,7 +26,7 @@ import httpx
 from . import db, pool as pool_mod, repo
 from .config import settings
 from .models import ModelSpec, Registry
-from .upstream import video, postedit, protocol
+from .upstream import video, postedit, protocol, tts, prompt_enhance, subject
 from .upstream.errors import JimengError, JimengParamError
 
 log = logging.getLogger("jimeng2api.service")
@@ -1112,3 +1112,37 @@ def refresh_task_images(task_id: str) -> dict:
     return {"ok": True, "images": task["images"]}
 
 
+
+
+# ---------------------------------------------------------------- 语音合成
+def speech(*, account_id: int, model: str, text: str, voice_id: str,
+           fmt: str, sample_rate: int, speed: float) -> tts.Audio:
+    """同步 TTS：一次上游调用，无任务、无轮询、不计积分。
+
+    与图片族共用账号池与连接池，但**不落 tasks 表** —— 没有 submit_id 可对账。
+    失败由 `tts` 归一到 `TtsUpstreamError`，路由层再映射为 502/504。
+    """
+    rt = pool_mod.pool.runtime(int(account_id))
+    return tts.synthesize(rt.client, text=text, voice_id=voice_id, fmt=fmt,
+                          sample_rate=int(sample_rate), speed=float(speed))
+
+
+# ---------------------------------------------------------------- 提示词增强
+def enhance_prompt(*, account_id: int, prompt: str, model_req_key: str,
+                   context: str = "T2V", ratio: str = "16:9",
+                   resolution: str = "720p", duration_ms: int = 5000) -> dict:
+    """短提示词 → 结构化脚本。免费，不走任务表（没有 submit_id 可对账）。"""
+    rt = pool_mod.pool.runtime(int(account_id))
+    return prompt_enhance.enhance(rt.client, prompt=prompt,
+                                  model_req_key=model_req_key, context=context,
+                                  ratio=ratio, resolution=resolution,
+                                  duration_ms=duration_ms)
+
+
+# ---------------------------------------------------------------- 主体（只读）
+def list_subjects(*, account_id: int, cursor: int = 0, limit: int = 20,
+                  source: str = "mine") -> dict:
+    """列出账号下的主体（角色/商品）。只读、免费，不走任务表。"""
+    subject.validate_args(cursor=cursor, limit=limit, source=source)
+    rt = pool_mod.pool.runtime(int(account_id))
+    return subject.list_subjects(rt.client, cursor=cursor, limit=limit, source=source)

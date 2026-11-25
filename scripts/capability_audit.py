@@ -34,7 +34,7 @@ UUID_RE = re.compile(r"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]
 
 #: 能力 → (证据文件, 构造参数)。证据为 None 表示"只有作品引用样本，无法对拍上传路径"。
 CASES: dict[str, tuple[str | None, dict]] = {
-    "jimeng-pro-hd": ("2026-11-19-pro-hd-generate.json",
+    "jimeng-pro-hd": ("2026-11-24-pro-hd-4k-generate.json",
                       {"source": "uri", "resolution": "2k"}),
     # 2026-11-20 起支持上传图（origin_image 用对象形态），所以按 uri 检查
     "jimeng-hd": (None, {"source": "uri"}),

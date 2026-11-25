@@ -533,7 +533,7 @@ def list_models() -> dict:
         "tools": tools,
         # 视频是**第三套**参数（duration / resolution / ratio），与 data 的
         # size/count、tools 的 mask/ratio 都不是一回事，单开一个键最清楚。
-        "videos": video.public_models(),
+        "videos": video.public_models(include_experimental=settings.video_experimental),
     }
 
 

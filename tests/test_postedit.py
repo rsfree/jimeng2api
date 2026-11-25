@@ -20,7 +20,9 @@ from app.upstream import postedit
 from app.upstream.errors import JimengParamError
 
 EVIDENCE_DIR = Path(__file__).resolve().parents[1] / "docs/evidence"
-EVIDENCE = EVIDENCE_DIR / "2026-11-19-pro-hd-generate.json"
+#: 2026-11-19 的旧抓包（core_param + min_version 3.3.40）已被上游判 invalid parameter，
+#: 保留存档但不再作为对拍基准；现行契约以 2026-11-24 的 UI 抓包为准。
+EVIDENCE = EVIDENCE_DIR / "2026-11-24-pro-hd-4k-generate.json"
 EVIDENCE_INPAINT = EVIDENCE_DIR / "2026-11-19-inpaint-generate.json"
 EVIDENCE_ERASE = EVIDENCE_DIR / "2026-11-19-erase-generate.json"
 EVIDENCE_OUTPAINT = EVIDENCE_DIR / "2026-11-19-outpaint-generate.json"
@@ -29,27 +31,36 @@ EVIDENCE_EDIT = EVIDENCE_DIR / "2026-11-19-smart-edit-generate.json"
 
 # ------------------------------------------------------------------ 抓包对拍
 def test_prohd_draft_matches_captured_request():
-    """智能超清的草稿必须与真实抓包同构（2026-11-19，提交成功、实扣 19 积分）。"""
+    """智能超清的草稿必须与真实抓包同构（2026-11-24 UI，4K 提交成功）。
+
+    这一版的关键差异：`core_param` 被移除，改由 `hd_scene_type` /
+    `original_image_strength` / `detail_strength` 三项驱动；`min_version`
+    回落 3.2.8；`min_features` 只剩 `AIGC_GenerateType_ProHD`。
+    """
     captured = json.loads(EVIDENCE.read_text(encoding="utf-8"))
     real = json.loads(captured["draft_content"])
     ability = postedit.get("jimeng-pro-hd")
     ours = json.loads(postedit.build_postedit_draft(
         ability=ability,
         source=postedit.build_source(image_uri="tos-cn-i-x", width=1024, height=1024),
-        resolution="2k",
+        resolution="4k",
     ))
 
     rc, oc = real["component_list"][0], ours["component_list"][0]
     assert ours["version"] == real["version"] == "3.3.40"
-    assert ours["min_features"] == real["min_features"]
+    assert ours["min_version"] == real["min_version"] == "3.2.8"
+    assert ours["min_features"] == real["min_features"] == ["AIGC_GenerateType_ProHD"]
     assert oc["generate_type"] == rc["generate_type"] == "pro_hd"
     # 组件级没有数字 gen_type（legacy 才有）
     assert "gen_type" not in oc
 
     rp, op = rc["abilities"]["pro_hd"], oc["abilities"]["pro_hd"]
-    assert op["core_param"]["model"] == rp["core_param"]["model"] == "image_upscale_paz"
-    assert op["core_param"]["generate_type"] == 0
-    assert op["resolution_type"] == rp["resolution_type"] == "2k"
+    # 2026-11-24 起 `core_param` 已从 pro_hd 移除 —— 留着会被判参数不匹配
+    assert "core_param" not in op and "core_param" not in rp
+    assert op["hd_scene_type"] == rp["hd_scene_type"] == "auto"
+    assert op["original_image_strength"] == rp["original_image_strength"] == 0.65
+    assert op["detail_strength"] == rp["detail_strength"] == 0.5
+    assert op["resolution_type"] == rp["resolution_type"] == "4k"
     assert op["postedit_param"]["generate_type"] == rp["postedit_param"]["generate_type"] == 35
 
     # origin_image 必须是对象，且键集与抓包一致
@@ -67,10 +78,10 @@ def test_prohd_extend_and_metrics_follow_capture():
     ability = postedit.get("jimeng-pro-hd")
 
     assert postedit.submit_extend(ability, "0") == {"workspace_id": 0}
-    assert captured["extend"] == {"workspace_id": 24813558116108}
+    assert captured["extend"] == {"workspace_id": 0}
 
     m = json.loads(postedit.submit_metrics(
-        ability, submit_id="sid", resolution="2k", width=1024, height=1024,
+        ability, submit_id="sid", resolution="4k", width=1024, height=1024,
         image_uri="tos-cn-i-x"))
     real_m = json.loads(captured["metrics_extra"])
     assert m["toolItemId"] == real_m["toolItemId"]
@@ -78,8 +89,10 @@ def test_prohd_extend_and_metrics_follow_capture():
     scene = json.loads(m["sceneOptions"])[0]
     real_scene = json.loads(real_m["sceneOptions"])[0]
     assert scene["scene"] == real_scene["scene"] == "ImageProHD"
-    assert scene["modelName"] == real_scene["modelName"] == "image_upscale_paz"
-    assert scene["postEditSourceSize"] == real_scene["postEditSourceSize"]
+    # 新版 sceneOptions 不再带 modelName / postEditSourceSize
+    assert set(scene) == set(real_scene) == {
+        "type", "scene", "proHDResolutionType", "reportParams"}
+    assert "modelName" not in scene and "postEditSourceSize" not in scene
 
 
 # ------------------------------------------------------------------ legacy

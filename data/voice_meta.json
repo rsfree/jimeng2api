@@ -1,0 +1,2412 @@
+{
+ "云龙哥": {
+  "gender": "male",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "通用"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7298191949306008102"
+ },
+ "沉稳男声": {
+  "gender": "male",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "磁性"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7317623416691888650"
+ },
+ "随性女声": {
+  "gender": "female",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "通用"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7350942233593385508"
+ },
+ "元气少女": {
+  "gender": "female",
+  "age": "teen",
+  "accent": "standard",
+  "style": [
+   "活泼"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7350221867958932031"
+ },
+ "米老哥": {
+  "gender": "male",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "通用"
+  ],
+  "category": "anime_role",
+  "use_case": [
+   "配音"
+  ],
+  "id": "7332462444561830454"
+ },
+ "重庆小伙": {
+  "gender": "male",
+  "age": "young",
+  "accent": "chongqing",
+  "style": [
+   "通用"
+  ],
+  "category": "dialect",
+  "use_case": [
+   "通用"
+  ],
+  "id": "6939395229950677534"
+ },
+ "动漫海绵": {
+  "gender": "male",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "通用"
+  ],
+  "category": "anime_role",
+  "use_case": [
+   "配音"
+  ],
+  "id": "6954271730848240136"
+ },
+ "阳光男生": {
+  "gender": "male",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "活泼"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "6912251288331751943"
+ },
+ "温柔淑女": {
+  "gender": "female",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "温柔"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7023300216061170213"
+ },
+ "西安掌柜": {
+  "gender": "male",
+  "age": "adult",
+  "accent": "xian",
+  "style": [
+   "通用"
+  ],
+  "category": "dialect",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7008044050917888548"
+ },
+ "粤语男声": {
+  "gender": "male",
+  "age": "adult",
+  "accent": "yue",
+  "style": [
+   "通用"
+  ],
+  "category": "dialect",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7023302069004014117"
+ },
+ "东北老铁": {
+  "gender": "male",
+  "age": "adult",
+  "accent": "dongbei",
+  "style": [
+   "通用"
+  ],
+  "category": "dialect",
+  "use_case": [
+   "通用"
+  ],
+  "id": "6912251359693640199"
+ },
+ "知性女声": {
+  "gender": "female",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "御姐"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7023300712998113823"
+ },
+ "四郎": {
+  "gender": "male",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "通用"
+  ],
+  "category": "screen_role",
+  "use_case": [
+   "配音"
+  ],
+  "id": "7170966598528799263"
+ },
+ "台湾女生": {
+  "gender": "female",
+  "age": "adult",
+  "accent": "taiwan",
+  "style": [
+   "通用"
+  ],
+  "category": "dialect",
+  "use_case": [
+   "通用"
+  ],
+  "id": "6966423537611444767"
+ },
+ "天津小哥": {
+  "gender": "male",
+  "age": "adult",
+  "accent": "tianjin",
+  "style": [
+   "通用"
+  ],
+  "category": "dialect",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7023305056589976095"
+ },
+ "熊二": {
+  "gender": "male",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "通用"
+  ],
+  "category": "anime_role",
+  "use_case": [
+   "配音"
+  ],
+  "id": "7170964808357909005"
+ },
+ "TVB女声": {
+  "gender": "female",
+  "age": "adult",
+  "accent": "hongkong",
+  "style": [
+   "通用"
+  ],
+  "category": "dialect",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7145775430832755230"
+ },
+ "黛玉": {
+  "gender": "female",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "通用"
+  ],
+  "category": "screen_role",
+  "use_case": [
+   "配音"
+  ],
+  "id": "7203252693555483196"
+ },
+ "台湾男生": {
+  "gender": "male",
+  "age": "adult",
+  "accent": "taiwan",
+  "style": [
+   "通用"
+  ],
+  "category": "dialect",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7200262470802346557"
+ },
+ "顾姐": {
+  "gender": "female",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "通用"
+  ],
+  "category": "screen_role",
+  "use_case": [
+   "配音"
+  ],
+  "id": "7170966542610338318"
+ },
+ "懒小羊": {
+  "gender": "female",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "通用"
+  ],
+  "category": "anime_role",
+  "use_case": [
+   "配音"
+  ],
+  "id": "7236944067072889405"
+ },
+ "猴哥": {
+  "gender": "male",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "通用"
+  ],
+  "category": "screen_role",
+  "use_case": [
+   "配音"
+  ],
+  "id": "7236944659547689531"
+ },
+ "港普男声": {
+  "gender": "male",
+  "age": "adult",
+  "accent": "hongkong",
+  "style": [
+   "通用"
+  ],
+  "category": "dialect",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7236947484650508859"
+ },
+ "京腔": {
+  "gender": "unknown",
+  "age": "adult",
+  "accent": "beijing",
+  "style": [
+   "通用"
+  ],
+  "category": "dialect",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7246701228736909879"
+ },
+ "老婆婆": {
+  "gender": "female",
+  "age": "senior",
+  "accent": "standard",
+  "style": [
+   "通用"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7242563452026229305"
+ },
+ "咆哮哥": {
+  "gender": "male",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "搞怪"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7265204498308534840"
+ },
+ "上海阿姨": {
+  "gender": "female",
+  "age": "adult",
+  "accent": "shanghai",
+  "style": [
+   "通用"
+  ],
+  "category": "dialect",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7270784654867698237"
+ },
+ "樱花小哥": {
+  "gender": "male",
+  "age": "adult",
+  "accent": "japanese",
+  "style": [
+   "通用"
+  ],
+  "category": "dialect",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7275251697721545277"
+ },
+ "容嬷嬷": {
+  "gender": "female",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "通用"
+  ],
+  "category": "screen_role",
+  "use_case": [
+   "配音"
+  ],
+  "id": "7278285365335560762"
+ },
+ "萌娃": {
+  "gender": "child",
+  "age": "child",
+  "accent": "standard",
+  "style": [
+   "通用"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "6855161957519987207"
+ },
+ "活泼女声": {
+  "gender": "female",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "活泼"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7366933865698431515"
+ },
+ "耿直女声": {
+  "gender": "female",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "通用"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7367236342641594890"
+ },
+ "悲伤青年": {
+  "gender": "male",
+  "age": "young",
+  "accent": "standard",
+  "style": [
+   "悲伤"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7367238720077959689"
+ },
+ "强势青年": {
+  "gender": "male",
+  "age": "young",
+  "accent": "standard",
+  "style": [
+   "通用"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7367238853679125043"
+ },
+ "冷静少女": {
+  "gender": "female",
+  "age": "teen",
+  "accent": "standard",
+  "style": [
+   "御姐",
+   "悲伤"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7367239175281578546"
+ },
+ "活泼少年": {
+  "gender": "male",
+  "age": "teen",
+  "accent": "standard",
+  "style": [
+   "活泼"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7367245673655177779"
+ },
+ "温柔阿姨": {
+  "gender": "female",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "温柔"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7367247089916449289"
+ },
+ "儒雅大叔": {
+  "gender": "male",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "通用"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7367250055360680474"
+ },
+ "刚正大叔": {
+  "gender": "male",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "正统"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7367252353176572467"
+ },
+ "小女孩": {
+  "gender": "female",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "通用"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7367252909815239206"
+ },
+ "小男孩": {
+  "gender": "male",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "通用"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7367253020309983782"
+ },
+ "沉稳老者": {
+  "gender": "male",
+  "age": "senior",
+  "accent": "standard",
+  "style": [
+   "磁性"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7367253137486254629"
+ },
+ "悲伤女声": {
+  "gender": "female",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "悲伤"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7367266428002505243"
+ },
+ "柔美女友": {
+  "gender": "female",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "温柔"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7382552865023201819"
+ },
+ "撒娇学妹": {
+  "gender": "female",
+  "age": "teen",
+  "accent": "standard",
+  "style": [
+   "萝莉"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7382558138009915913"
+ },
+ "魅力女友": {
+  "gender": "female",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "御姐"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7382839113059144229"
+ },
+ "阳光少年": {
+  "gender": "male",
+  "age": "teen",
+  "accent": "standard",
+  "style": [
+   "活泼"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7382845921647661595"
+ },
+ "广告男声": {
+  "gender": "male",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "通用"
+  ],
+  "category": "scenario",
+  "use_case": [
+   "广告"
+  ],
+  "id": "7382874510376047130"
+ },
+ "悠悠君子": {
+  "gender": "male",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "通用"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7382878113916523035"
+ },
+ "高冷御姐": {
+  "gender": "female",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "御姐",
+   "悲伤"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7382878375473320475"
+ },
+ "阳光青年": {
+  "gender": "male",
+  "age": "young",
+  "accent": "standard",
+  "style": [
+   "活泼"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7382878511217775130"
+ },
+ "开朗学长": {
+  "gender": "male",
+  "age": "young",
+  "accent": "standard",
+  "style": [
+   "活泼"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7382879228393427493"
+ },
+ "病娇少女": {
+  "gender": "female",
+  "age": "teen",
+  "accent": "standard",
+  "style": [
+   "萝莉"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7382879331174847013"
+ },
+ "魅力姐姐": {
+  "gender": "female",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "御姐"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7382879492752019995"
+ },
+ "紫薇": {
+  "gender": "female",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "通用"
+  ],
+  "category": "screen_role",
+  "use_case": [
+   "配音"
+  ],
+  "id": "7281175385486660155"
+ },
+ "动漫小新": {
+  "gender": "male",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "通用"
+  ],
+  "category": "anime_role",
+  "use_case": [
+   "配音"
+  ],
+  "id": "6855162047320035854"
+ },
+ "如来佛祖": {
+  "gender": "male",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "通用"
+  ],
+  "category": "screen_role",
+  "use_case": [
+   "配音"
+  ],
+  "id": "7327220560335737363"
+ },
+ "华妃": {
+  "gender": "female",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "通用"
+  ],
+  "category": "screen_role",
+  "use_case": [
+   "配音"
+  ],
+  "id": "7360900412167164470"
+ },
+ "广西老表": {
+  "gender": "male",
+  "age": "adult",
+  "accent": "guangxi",
+  "style": [
+   "通用"
+  ],
+  "category": "dialect",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7382049000242811442"
+ },
+ "山东小哥": {
+  "gender": "male",
+  "age": "adult",
+  "accent": "shandong",
+  "style": [
+   "通用"
+  ],
+  "category": "dialect",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7382048947646239259"
+ },
+ "京腔小爷": {
+  "gender": "male",
+  "age": "adult",
+  "accent": "beijing",
+  "style": [
+   "通用"
+  ],
+  "category": "dialect",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7382048889659986458"
+ },
+ "河南小哥": {
+  "gender": "male",
+  "age": "adult",
+  "accent": "henan",
+  "style": [
+   "通用"
+  ],
+  "category": "dialect",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7382049051304268339"
+ },
+ "湾区大叔": {
+  "gender": "male",
+  "age": "adult",
+  "accent": "bayarea",
+  "style": [
+   "通用"
+  ],
+  "category": "dialect",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7382049147311886874"
+ },
+ "长沙妹坨": {
+  "gender": "female",
+  "age": "teen",
+  "accent": "changsha",
+  "style": [
+   "通用"
+  ],
+  "category": "dialect",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7376856724151472679"
+ },
+ "妩媚女声": {
+  "gender": "female",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "御姐"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7459778019725414962"
+ },
+ "活泼女孩": {
+  "gender": "female",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "活泼"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7462472428438950452"
+ },
+ "生动解说": {
+  "gender": "unknown",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "通用"
+  ],
+  "category": "scenario",
+  "use_case": [
+   "解说"
+  ],
+  "id": "7592679314714268186"
+ },
+ "精品有声书": {
+  "gender": "unknown",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "通用"
+  ],
+  "category": "scenario",
+  "use_case": [
+   "有声书"
+  ],
+  "id": "7592679474223649318"
+ },
+ "清晰语录": {
+  "gender": "unknown",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "通用"
+  ],
+  "category": "scenario",
+  "use_case": [
+   "语录"
+  ],
+  "id": "7592679757255283250"
+ },
+ "桃花庵主": {
+  "gender": "female",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "通用"
+  ],
+  "category": "screen_role",
+  "use_case": [
+   "配音"
+  ],
+  "id": "7595496872207192627"
+ },
+ "猪猪侠": {
+  "gender": "male",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "通用"
+  ],
+  "category": "anime_role",
+  "use_case": [
+   "配音"
+  ],
+  "id": "7595864865109971499"
+ },
+ "灵动女声": {
+  "gender": "female",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "活泼"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7595874585833116170"
+ },
+ "苏感低音": {
+  "gender": "male",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "磁性"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7595864590013960747"
+ },
+ "乌萨七": {
+  "gender": "female",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "通用"
+  ],
+  "category": "anime_role",
+  "use_case": [
+   "配音"
+  ],
+  "id": "7595864815097090566"
+ },
+ "唐僧": {
+  "gender": "male",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "通用"
+  ],
+  "category": "screen_role",
+  "use_case": [
+   "配音"
+  ],
+  "id": "7595864466315547142"
+ },
+ "厚实男声": {
+  "gender": "male",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "磁性"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7595864918235025961"
+ },
+ "阳光美眉": {
+  "gender": "female",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "活泼"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7595864529204941348"
+ },
+ "和蔼奶奶": {
+  "gender": "female",
+  "age": "senior",
+  "accent": "standard",
+  "style": [
+   "通用"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7595874438051009050"
+ },
+ "派星星": {
+  "gender": "female",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "通用"
+  ],
+  "category": "anime_role",
+  "use_case": [
+   "配音"
+  ],
+  "id": "7595861679376699931"
+ },
+ "佩奇猪": {
+  "gender": "female",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "通用"
+  ],
+  "category": "anime_role",
+  "use_case": [
+   "配音"
+  ],
+  "id": "7595861557599277618"
+ },
+ "萌娃百科": {
+  "gender": "child",
+  "age": "child",
+  "accent": "standard",
+  "style": [
+   "通用"
+  ],
+  "category": "scenario",
+  "use_case": [
+   "绘本"
+  ],
+  "id": "7595860804197421594"
+ },
+ "磁性男主播": {
+  "gender": "male",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "磁性"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7595862660667675178"
+ },
+ "清醒语录": {
+  "gender": "unknown",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "通用"
+  ],
+  "category": "scenario",
+  "use_case": [
+   "语录"
+  ],
+  "id": "7595863083214443014"
+ },
+ "甜美软妹": {
+  "gender": "female",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "温柔"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7595864041617101353"
+ },
+ "小八酱": {
+  "gender": "female",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "通用"
+  ],
+  "category": "anime_role",
+  "use_case": [
+   "配音"
+  ],
+  "id": "7595864734746808895"
+ },
+ "如来": {
+  "gender": "male",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "通用"
+  ],
+  "category": "screen_role",
+  "use_case": [
+   "配音"
+  ],
+  "id": "7595860952910664219"
+ },
+ "沉稳解说Pro": {
+  "gender": "unknown",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "磁性"
+  ],
+  "category": "scenario",
+  "use_case": [
+   "解说"
+  ],
+  "id": "7595864320450236969"
+ },
+ "文静学姐": {
+  "gender": "female",
+  "age": "young",
+  "accent": "standard",
+  "style": [
+   "通用"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7595864392411910710"
+ },
+ "做作夹子音": {
+  "gender": "female",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "搞怪"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7595860655865860658"
+ },
+ "暖心学姐": {
+  "gender": "female",
+  "age": "young",
+  "accent": "standard",
+  "style": [
+   "温柔"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7595863981525307945"
+ },
+ "雄厚配音": {
+  "gender": "unknown",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "通用"
+  ],
+  "category": "scenario",
+  "use_case": [
+   "配音"
+  ],
+  "id": "7595863434084749830"
+ },
+ "端庄女声": {
+  "gender": "female",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "正统"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7595863846460330550"
+ },
+ "熊爸爸讲故事": {
+  "gender": "male",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "通用"
+  ],
+  "category": "scenario",
+  "use_case": [
+   "绘本"
+  ],
+  "id": "7595862889072693802"
+ },
+ "皇上": {
+  "gender": "male",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "通用"
+  ],
+  "category": "screen_role",
+  "use_case": [
+   "配音"
+  ],
+  "id": "7595861870636962350"
+ },
+ "奶萌男宝": {
+  "gender": "male",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "萝莉"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7595863496596656659"
+ },
+ "调皮公主": {
+  "gender": "female",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "搞怪"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7595864107316679222"
+ },
+ "温柔女声": {
+  "gender": "female",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "温柔"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7595874500562915867"
+ },
+ "流畅女声": {
+  "gender": "female",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "通用"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7595863207604916772"
+ },
+ "春日部姐姐": {
+  "gender": "female",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "通用"
+  ],
+  "category": "anime_role",
+  "use_case": [
+   "配音"
+  ],
+  "id": "7595860875005661747"
+ },
+ "台湾腔甜妹": {
+  "gender": "female",
+  "age": "adult",
+  "accent": "taiwan",
+  "style": [
+   "通用"
+  ],
+  "category": "dialect",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7595862579407229467"
+ },
+ "知性熟女": {
+  "gender": "female",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "御姐"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7595863924013011498"
+ },
+ "超萌小奶音": {
+  "gender": "child",
+  "age": "child",
+  "accent": "standard",
+  "style": [
+   "萝莉"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7595863683868135999"
+ },
+ "正义勇士": {
+  "gender": "male",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "正统"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7595859507083743771"
+ },
+ "真人播客男": {
+  "gender": "male",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "通用"
+  ],
+  "category": "scenario",
+  "use_case": [
+   "播客"
+  ],
+  "id": "7595863320662381099"
+ },
+ "儿童绘本": {
+  "gender": "unknown",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "通用"
+  ],
+  "category": "scenario",
+  "use_case": [
+   "绘本"
+  ],
+  "id": "7595862828058153514"
+ },
+ "搞怪鸭子嗓": {
+  "gender": "unknown",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "搞怪"
+  ],
+  "category": "anime_role",
+  "use_case": [
+   "配音"
+  ],
+  "id": "7595864981745177142"
+ },
+ "少女心事": {
+  "gender": "female",
+  "age": "teen",
+  "accent": "standard",
+  "style": [
+   "通用"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7595864679474270774"
+ },
+ "软萌童声": {
+  "gender": "child",
+  "age": "child",
+  "accent": "standard",
+  "style": [
+   "通用"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7595863749165060649"
+ },
+ "真人播客女": {
+  "gender": "female",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "通用"
+  ],
+  "category": "scenario",
+  "use_case": [
+   "播客"
+  ],
+  "id": "7595863017200292406"
+ },
+ "慵懒男声": {
+  "gender": "male",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "通用"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7595865041291711018"
+ },
+ "神厨老佛爷": {
+  "gender": "female",
+  "age": "senior",
+  "accent": "standard",
+  "style": [
+   "通用"
+  ],
+  "category": "screen_role",
+  "use_case": [
+   "配音"
+  ],
+  "id": "7595859998249325102"
+ },
+ "蜡笔小妮": {
+  "gender": "female",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "通用"
+  ],
+  "category": "anime_role",
+  "use_case": [
+   "配音"
+  ],
+  "id": "7595860372582568486"
+ },
+ "九小月": {
+  "gender": "female",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "通用"
+  ],
+  "category": "anime_role",
+  "use_case": [
+   "配音"
+  ],
+  "id": "7595861420424565257"
+ },
+ "Vlog配音": {
+  "gender": "unknown",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "通用"
+  ],
+  "category": "scenario",
+  "use_case": [
+   "Vlog"
+  ],
+  "id": "7595863622144758278"
+ },
+ "情感语录": {
+  "gender": "unknown",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "通用"
+  ],
+  "category": "scenario",
+  "use_case": [
+   "语录"
+  ],
+  "id": "7595860717295637001"
+ },
+ "娇弱女": {
+  "gender": "female",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "萝莉"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7596773300513018395"
+ },
+ "温柔软妹": {
+  "gender": "female",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "温柔"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7597330727050416666"
+ },
+ "含蓄女声": {
+  "gender": "female",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "通用"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7597330555054592521"
+ },
+ "TVB女声Pro": {
+  "gender": "female",
+  "age": "adult",
+  "accent": "hongkong",
+  "style": [
+   "通用"
+  ],
+  "category": "dialect",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7597329815800123954"
+ },
+ "低沉大叔": {
+  "gender": "male",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "磁性"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7597329680416379419"
+ },
+ "憨萌福娃": {
+  "gender": "child",
+  "age": "child",
+  "accent": "standard",
+  "style": [
+   "通用"
+  ],
+  "category": "anime_role",
+  "use_case": [
+   "配音"
+  ],
+  "id": "7597330126698713609"
+ },
+ "聪慧胖仔": {
+  "gender": "male",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "通用"
+  ],
+  "category": "anime_role",
+  "use_case": [
+   "配音"
+  ],
+  "id": "7597330240997691950"
+ },
+ "爽快小哥": {
+  "gender": "male",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "活泼"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7597329730446037550"
+ },
+ "飒爽少侠": {
+  "gender": "male",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "通用"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7597329616751039026"
+ },
+ "明媚女声": {
+  "gender": "female",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "活泼"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7597330622431892014"
+ },
+ "孤傲公子": {
+  "gender": "male",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "悲伤"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7597005810589241865"
+ },
+ "冷酷女生": {
+  "gender": "female",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "御姐",
+   "悲伤"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7597006330401919515"
+ },
+ "温婉女生": {
+  "gender": "female",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "温柔"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7597005988335456818"
+ },
+ "狐媚姐姐": {
+  "gender": "female",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "御姐"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7597329385917518345"
+ },
+ "优雅女声": {
+  "gender": "female",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "通用"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7597329485985223214"
+ },
+ "纯净女声": {
+  "gender": "female",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "通用"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7597329938055696906"
+ },
+ "成熟御姐": {
+  "gender": "female",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "御姐"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7597329155633451558"
+ },
+ "老实小哥": {
+  "gender": "male",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "正统"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7597005874686595594"
+ },
+ "暖心哥哥": {
+  "gender": "male",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "温柔"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7597005607765283378"
+ },
+ "阳光小男孩": {
+  "gender": "male",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "活泼"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7597330049687097866"
+ },
+ "将门女将": {
+  "gender": "female",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "通用"
+  ],
+  "category": "screen_role",
+  "use_case": [
+   "配音"
+  ],
+  "id": "7597329213435154971"
+ },
+ "邻居阿姨": {
+  "gender": "female",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "通用"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7597004797014708745"
+ },
+ "成熟总裁": {
+  "gender": "male",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "御姐"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7597006244389327411"
+ },
+ "稳重男声": {
+  "gender": "male",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "磁性"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7597005026761904690"
+ },
+ "开朗男大": {
+  "gender": "male",
+  "age": "young",
+  "accent": "standard",
+  "style": [
+   "活泼"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7597005676115661321"
+ },
+ "八戒Pro": {
+  "gender": "male",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "通用"
+  ],
+  "category": "screen_role",
+  "use_case": [
+   "配音"
+  ],
+  "id": "7597330350674547251"
+ },
+ "清润女声": {
+  "gender": "female",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "通用"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7597004927570809390"
+ },
+ "低音炮": {
+  "gender": "male",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "磁性"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7597329882745410057"
+ },
+ "甜软萌妹": {
+  "gender": "child",
+  "age": "child",
+  "accent": "standard",
+  "style": [
+   "温柔"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7597005101122720306"
+ },
+ "正气女声": {
+  "gender": "female",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "正统"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7597009953852756490"
+ },
+ "气质阿姨": {
+  "gender": "female",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "通用"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7597006172771586569"
+ },
+ "清甜女声": {
+  "gender": "female",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "温柔"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7597004609592234522"
+ },
+ "深夜博客": {
+  "gender": "unknown",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "通用"
+  ],
+  "category": "scenario",
+  "use_case": [
+   "播客"
+  ],
+  "id": "7597328904042320394"
+ },
+ "蜡笔小新": {
+  "gender": "male",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "通用"
+  ],
+  "category": "anime_role",
+  "use_case": [
+   "配音"
+  ],
+  "id": "7597330401786335790"
+ },
+ "严厉大叔": {
+  "gender": "male",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "正统"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7597004543045407241"
+ },
+ "豪放男子": {
+  "gender": "male",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "通用"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7597004865990038067"
+ },
+ "傲娇霸总": {
+  "gender": "unknown",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "通用"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7597005746466722330"
+ },
+ "英气飒姐": {
+  "gender": "female",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "通用"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7597328708042494473"
+ },
+ "随性男声": {
+  "gender": "male",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "通用"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7597003746723238426"
+ },
+ "糯音女孩": {
+  "gender": "female",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "通用"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7597330191790117427"
+ },
+ "清冷女主": {
+  "gender": "female",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "御姐",
+   "悲伤"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7597006397452063270"
+ },
+ "冷酷哥哥": {
+  "gender": "male",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "御姐",
+   "悲伤"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7597004070573838875"
+ },
+ "妩媚熟女": {
+  "gender": "female",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "御姐"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7597328596478202419"
+ },
+ "权威精英男": {
+  "gender": "male",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "正统"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7597329550942409254"
+ },
+ "严肃大叔": {
+  "gender": "male",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "正统"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7597004144729133614"
+ },
+ "呆萌小男孩": {
+  "gender": "male",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "萝莉"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7597329321715307035"
+ },
+ "威严老爷子": {
+  "gender": "male",
+  "age": "senior",
+  "accent": "standard",
+  "style": [
+   "正统"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7597328986699469338"
+ },
+ "软糯少女音": {
+  "gender": "female",
+  "age": "teen",
+  "accent": "standard",
+  "style": [
+   "温柔"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7597005358120309275"
+ },
+ "磁性嗓音": {
+  "gender": "unknown",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "磁性"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7597004217466753545"
+ },
+ "温和女声": {
+  "gender": "female",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "温柔"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7597004476456636938"
+ },
+ "硬朗大爷": {
+  "gender": "male",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "正统"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7597003695544341019"
+ },
+ "霸气帝王": {
+  "gender": "male",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "御姐"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7597003643388170762"
+ },
+ "慈祥奶奶": {
+  "gender": "female",
+  "age": "senior",
+  "accent": "standard",
+  "style": [
+   "通用"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7597328834844693001"
+ },
+ "清亮男声Pro": {
+  "gender": "male",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "通用"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7597005173025673755"
+ },
+ "乖巧男孩": {
+  "gender": "male",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "萝莉"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7597004393837236774"
+ },
+ "乖巧萌妹": {
+  "gender": "child",
+  "age": "child",
+  "accent": "standard",
+  "style": [
+   "萝莉"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7597003375837712942"
+ },
+ "爽朗学长": {
+  "gender": "male",
+  "age": "young",
+  "accent": "standard",
+  "style": [
+   "活泼"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7597004281639604774"
+ },
+ "亲切伯伯": {
+  "gender": "male",
+  "age": "senior",
+  "accent": "standard",
+  "style": [
+   "通用"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7597004714751824422"
+ },
+ "正直哥哥": {
+  "gender": "male",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "通用"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7597002981493445170"
+ },
+ "沉稳大叔": {
+  "gender": "male",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "磁性"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7597003587289354761"
+ },
+ "直爽女大": {
+  "gender": "female",
+  "age": "young",
+  "accent": "standard",
+  "style": [
+   "活泼"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7597003459665072686"
+ },
+ "逗趣男声": {
+  "gender": "male",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "搞怪"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7597002881593512458"
+ },
+ "慈祥爷爷": {
+  "gender": "male",
+  "age": "senior",
+  "accent": "standard",
+  "style": [
+   "通用"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7597005479771902515"
+ },
+ "温柔叔叔": {
+  "gender": "male",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "温柔"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7597005419134849587"
+ },
+ "优柔公子": {
+  "gender": "male",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "通用"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7597003296930271790"
+ },
+ "自信男声": {
+  "gender": "male",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "通用"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7597003523200389670"
+ },
+ "灵动甜妹": {
+  "gender": "female",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "活泼"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7597329046812234250"
+ },
+ "奶萌少女": {
+  "gender": "female",
+  "age": "teen",
+  "accent": "standard",
+  "style": [
+   "萝莉"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7597004340745736750"
+ },
+ "天真妹妹": {
+  "gender": "female",
+  "age": "adult",
+  "accent": "standard",
+  "style": [
+   "通用"
+  ],
+  "category": "general",
+  "use_case": [
+   "通用"
+  ],
+  "id": "7597003244434362926"
+ }
+}

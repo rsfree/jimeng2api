@@ -8,7 +8,7 @@
 
 | shape | 能力 | 草稿特征 | 证据 |
 |---|---|---|---|
-| `prohd` | 智能超清（Paz） | `abilities.pro_hd` + `core_param.model=image_upscale_paz` + `resolution_type`，**没有** `gen_option` | **2026-11-19 真实提交成功**（2K，实扣 19 积分） |
+| `prohd` | 智能超清 2.0 | `abilities.pro_hd` + `resolution_type` + 三项强度参数，**没有** `core_param`、没有 `gen_option` | **2026-11-24 UI 抓包成功**（4K=2 积分、8K=4 积分）；旧 Paz 形态当日已被拒 |
 | `legacy` | 超清 / 细节修复 | `abilities.<ability>.postedit_param` + `gen_option`，无 `core_param` | 超清：本号历史 12 条草稿；细节修复：技能实测 |
 
 `origin_image` **是对象不是字符串**。2026-11-19 实测：传 `"tos-…"` 字符串得到
@@ -38,7 +38,17 @@ from .protocol import _meta, uid
 MIN_VERSION = "3.2.9"
 #: pro_hd 草稿的版本（照抄 2026-11-19 抓包）
 PROHD_VERSION = "3.3.40"
+#: pro_hd 草稿的 `min_version`。2026-11-24 UI 抓包是 **3.2.8**，比 `version` 低；
+#: 照抄 3.3.40 会被上游按 invalid parameter 拒（实测 2k/4k/8k 全拒）。
+PROHD_MIN_VERSION = "3.2.8"
+#: 新版 pro_hd 的默认参数（2026-11-24 UI 抓包原值）。UI 把「默认超分模型 /
+#: 细节生成程度」摊成三项，旧版的 `core_param.model=image_upscale_paz` 已消失。
+PROHD_HD_SCENE_TYPE = "auto"
+PROHD_ORIGINAL_STRENGTH = 0.65
+PROHD_DETAIL_STRENGTH = 0.5
 #: 智能超清用的超分模型与场景名（抓包原文）
+#: 旧版 `core_param.model` 的取值。**2026-11-24 起草稿不再下发 `core_param`**，
+#: 这个常量仅作历史标注，别再加回草稿里（多带会被上游判 invalid parameter）。
 PROHD_MODEL = "image_upscale_paz"
 PROHD_SCENE = "ImageProHD"
 #: 工具市场条目 id（抓包原文，埋点用）
@@ -138,21 +148,24 @@ ABILITIES: dict[str, Ability] = {
         key="jimeng-pro-hd", ability="pro_hd", gen_type=35,
         name="智能超清（Paz）", input="uri", experimental=False,
         shape="prohd", model=PROHD_MODEL, scene=PROHD_SCENE,
-        min_features=("AIGC_GenerateType_ProHD", "AIGC_PostEdit_UpscaleModel"),
+        min_features=("AIGC_GenerateType_ProHD",),
         resolutions=("2k", "4k", "8k"),
-        notes="2026-11-19 真实提交成功（2K，实扣 19 积分），请求体见 docs/evidence/",
+        notes=("2026-11-24 UI 重抓后打通：4K→4096²（2 积分）、8K→8192²（4 积分）。"
+               "旧 Paz 形态（core_param + min_version 3.3.40）当日全部 ret=1000。"
+               "见 docs/evidence/2026-11-24-pro-hd-4k-generate.json"),
     ),
     "jimeng-hd": Ability(
         key="jimeng-hd", ability="normal_hd", gen_type=13,
         name="超清（普通）", input="both", experimental=False,
-        notes=("2026-11-20 探测：上传图路径**可用且未扣费** —— 关键是 origin_image "
-               "必须是**对象**（image 节点）；2026-11-19 用字符串被拒（ret=1000）。"
-               "实测 1024→2048（2 倍），1 次样本余额不变"),
+        notes=("2026-11-25 复测上传图路径：1024→**2048×2048**，`credit_history` "
+               "按 submit_id 查**无扣费记录**（该能力免费）。关键是 origin_image 必须是"
+               "**对象**（image 节点）—— 2026-11-19 用字符串被拒（ret=1000）。"),
     ),
     "jimeng-detail-fix": Ability(
         key="jimeng-detail-fix", ability="super_resolution", gen_type=2,
         name="细节修复", input="item", experimental=False,
-        notes="2026-09 实测：只认作品引用，带 origin_image 会 generate_failed 且计费",
+        notes=("2026-11-25 复测：item 引用 2048→**1920×1920**、**免费**（无流水）。"
+               "只认作品引用，带 origin_image 会 generate_failed 且计费（2026-09）。"),
     ),
     "jimeng-inpaint": Ability(
         key="jimeng-inpaint", ability="inpainting", gen_type=7,
@@ -178,8 +191,9 @@ ABILITIES: dict[str, Ability] = {
         key="jimeng-cutout", ability="saliency_seg", gen_type=None,
         name="抠图（去背景）", input="uri", experimental=False,
         shape="segment",
-        notes=("2026-11-19 实测：saliency_seg 免费，返回的 PNG **alpha 通道即蒙版**，"
-               "直接就是透明底结果（主体 rgb 保留）。不走 aigc_draft，没有 submit_id"),
+        notes=("2026-11-25 复测：免费、同步、返回透明底 PNG（alpha 即蒙版）。"
+               "**输入必须有显著主体** —— 棋盘/纯色图报 ret=2046 "
+               "no saliency segment object found。不走 aigc_draft，没有 submit_id"),
     ),
     "jimeng-smart-edit": Ability(
         key="jimeng-smart-edit", ability="smart_edit_v2", gen_type=101,
@@ -782,13 +796,19 @@ def _build_legacy(ability: Ability, source: dict, count: int,
 
 def _build_prohd(ability: Ability, source: dict, resolution: str,
                  version: str) -> str:
-    """智能超清：**有 core_param，没有 gen_option**，`origin_image` 是对象。"""
+    """智能超清：**无 core_param、无 gen_option**，`origin_image` 是对象。
+
+    2026-11-24 UI 重抓：旧形态（`core_param.model=image_upscale_paz` +
+    `min_features` 两项 + `min_version=3.3.40`）已被上游判 `invalid parameter`，
+    2K/4K/8K 无一幸免。新形态由 `hd_scene_type` / `original_image_strength` /
+    `detail_strength` 三项取代 `core_param`，`min_version` 回落到 3.2.8。
+    """
     if "item_id" in source:
         raise ValueError("智能超清只收上传图（origin_image 对象），不收作品引用")
     comp_id = uid()
     uri = source["image_uri"]
     draft = {
-        "type": "draft", "id": uid(), "min_version": version,
+        "type": "draft", "id": uid(), "min_version": PROHD_MIN_VERSION,
         "min_features": list(ability.min_features),
         "is_from_tsn": True, "version": version,
         "main_component_id": comp_id,
@@ -801,11 +821,10 @@ def _build_prohd(ability: Ability, source: dict, resolution: str,
                 "type": "", "id": uid(),
                 ability.ability: {
                     "type": "", "id": uid(),
-                    "core_param": {
-                        "type": "", "id": uid(),
-                        "model": ability.model, "generate_type": 0,
-                    },
                     "resolution_type": resolution,
+                    "hd_scene_type": PROHD_HD_SCENE_TYPE,
+                    "original_image_strength": PROHD_ORIGINAL_STRENGTH,
+                    "detail_strength": PROHD_DETAIL_STRENGTH,
                     "postedit_param": {
                         "type": "", "id": uid(),
                         "generate_type": ability.gen_type,
@@ -902,8 +921,9 @@ def submit_metrics(ability: Ability, *, submit_id: str, resolution: str,
             separators=(",", ":"))
     scene = {
         "type": "image", "scene": ability.scene,
-        "proHDResolutionType": resolution, "modelName": ability.model,
-        "postEditSourceSize": {"width": int(width), "height": int(height)},
+        # 2026-11-24 UI 抓包：sceneOptions 只剩这四项，`modelName` 与
+        # `postEditSourceSize` 已不再下发（多带会被视为参数不匹配）。
+        "proHDResolutionType": resolution,
         "reportParams": {"enterSource": "generate",
                          "extraVipFunctionKey": image_uri},
     }

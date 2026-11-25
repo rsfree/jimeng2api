@@ -10,7 +10,7 @@
 
 | shape | 能力 | 关键字段 | 证据 |
 |---|---|---|---|
-| `prohd` | 智能超清（Paz） | `abilities.pro_hd` + `core_param.model` + `resolution_type`，**无** `gen_option` | **[实]** 2026-11-19 提交成功，实扣 19 积分 |
+| `prohd` | 智能超清 2.0 | `abilities.pro_hd` + `resolution_type` + `hd_scene_type`/`original_image_strength`/`detail_strength`，**无** `core_param`、无 `gen_option` | **[实]** 2026-11-24 UI 抓包 4K 成功；旧 Paz 形态当日已被拒 |
 | `legacy` | 超清（normal_hd）/ 细节修复 | `abilities.<ability>.postedit_param` + `gen_option`，**无** `core_param` | **[实]** 超清：本号历史 12 条；细节修复：2026-09 实测 |
 
 ## 2. 生成类型枚举（`GenerateType`）
@@ -41,14 +41,14 @@
 
 | 对外模型 | ability | gen_type | 输入 | 证据 | 状态 |
 |---|---|---|---|---|---|
-| `jimeng-pro-hd`（智能超清） | `pro_hd` | 35 | 上传图 | **[实]** 成功，19 积分/次（2K/4K/8K 同价） | 可用 |
-| `jimeng-hd`（超清/变清晰/超分） | `normal_hd` | 13 | 上传图 / 作品引用 | **[实]** 上传图 1024→2048 出图，**余额未变** | 可用 |
-| `jimeng-detail-fix`（细节修复） | `super_resolution` | 2 | **仅**作品引用 | **[实]** item 引用成功（2048→1920），未扣费；带上传图会 `generate_failed` | 可用 |
-| `jimeng-inpaint`（局部重绘） | `inpainting`（unified） | 7 | 上传图 + **mask** | **[实]** 端到端成功，1 积分/4 张 | 可用 |
-| `jimeng-erase`（消除笔） | `inpainting_remove`（unified） | 9 | 上传图 + **mask** | **[实]** 端到端成功，1 积分/1 张 | 可用 |
-| `jimeng-cutout`（抠图/去背景） | `saliency_seg` | — | 上传图 | **[实]** 免费、1.9s、返回透明底 PNG | 可用（同步） |
-| `jimeng-outpaint`（扩图） | `outpainting`（unified） | 8 | 上传图 | **[实]** 16:9→1820×1024、3x→3072²（几何公式两处被产物尺寸反证） | 可用 |
-| `jimeng-smart-edit`（智能编辑） | `smart_edit_v2`（unified_v2） | **101** | 上传图 + **prompt** | **[实]** 1.5k=1536（4 积分）、2k=2048（**6 积分**） | 可用 |
+| `jimeng-pro-hd`（智能超清） | `pro_hd` | 35 | 上传图 | **[实]** 2K=1、4K=2、8K=4 积分；输出 2160²/4096²/8192²（2026-11-24） | 可用 |
+| `jimeng-hd`（超清/变清晰/超分） | `normal_hd` | 13 | 上传图 / 作品引用 | **[实]** 2026-11-25 复测：上传图 1024→**2048²**，`credit_history` **无扣费记录（免费）** | 可用 |
+| `jimeng-detail-fix`（细节修复） | `super_resolution` | 2 | **仅**作品引用 | **[实]** 2026-11-25 复测：item 引用 2048→**1920²**、**免费**；带上传图会 `generate_failed` | 可用 |
+| `jimeng-inpaint`（局部重绘） | `inpainting`（unified） | 7 | 上传图 + **mask** | **[实]** 2026-11-25 复测：4 张 1024²、**1 积分** | 可用 |
+| `jimeng-erase`（消除笔） | `inpainting_remove`（unified） | 9 | 上传图 + **mask** | **[实]** 2026-11-25 复测：1 张 1024²、**1 积分** | 可用 |
+| `jimeng-cutout`（抠图/去背景） | `saliency_seg` | — | 上传图 | **[实]** 免费、同步、返回透明底 PNG；**输入必须有显著主体**，棋盘/纯色图报 `ret=2046 no saliency segment object found` | 可用（同步） |
+| `jimeng-outpaint`（扩图） | `outpainting`（unified） | 8 | 上传图 | **[实]** 2026-11-25 复测 16:9→1820×1024、**1 积分**；3x→3072²（几何公式被产物尺寸反证） | 可用 |
+| `jimeng-smart-edit`（智能编辑） | `smart_edit_v2`（unified_v2） | **101** | 上传图 + **prompt** | **[实]** 1.5k=1536（4 积分）、2k=2048（**6 积分**）；2026-11-25 复测 2k 出 2048²、扣 6 | 可用 |
 
 实验能力需显式打开：`JIMENG2API_POSTEDIT_EXPERIMENTAL=1`。
 **当前没有实验能力**（全部已取证），开关保留给未来新增的能力。
@@ -58,23 +58,26 @@
 
 ## 4. 智能超清：真实请求（2026-11-19，成功）
 
-完整外层提交体存档在 [`docs/evidence/2026-11-19-pro-hd-generate.json`](evidence/2026-11-19-pro-hd-generate.json)。
+完整外层提交体存档在 [`docs/evidence/2026-11-24-pro-hd-4k-generate.json`](evidence/2026-11-24-pro-hd-4k-generate.json)
+（2026-11-19 的旧抓包 `2026-11-19-pro-hd-generate.json` 保留存档，但**已失效**，别再对照它写实现）。
 
 ```json
 {
-  "extend": {"workspace_id": 24813558116108},
-  "submit_id": "f18307f8-…",
+  "extend": {"workspace_id": 25006807578380},
+  "submit_id": "928af0ef-…",
   "metrics_extra": "{…}",
   "draft_content": "{
-    \"type\":\"draft\",\"min_version\":\"3.3.40\",
-    \"min_features\":[\"AIGC_GenerateType_ProHD\",\"AIGC_PostEdit_UpscaleModel\"],
+    \"type\":\"draft\",\"min_version\":\"3.2.8\",
+    \"min_features\":[\"AIGC_GenerateType_ProHD\"],
     \"version\":\"3.3.40\",
     \"component_list\":[{
       \"type\":\"image_base_component\",\"aigc_mode\":\"workbench\",
       \"generate_type\":\"pro_hd\",              ← 没有数字 gen_type
       \"abilities\":{\"pro_hd\":{
-        \"core_param\":{\"model\":\"image_upscale_paz\",\"generate_type\":0},
-        \"resolution_type\":\"2k\",
+        \"resolution_type\":\"4k\",
+        \"hd_scene_type\":\"auto\",
+        \"original_image_strength\":0.65,
+        \"detail_strength\":0.5,
         \"postedit_param\":{\"generate_type\":35,\"origin_image\":{ …对象… }}
       }}
     }]
@@ -83,14 +86,18 @@
 }
 ```
 
-四个必须照抄的点：
+五个必须照抄的点（2026-11-24 重抓后）：
 
 1. **`origin_image` 是对象**，不是字符串：
    `{type:"image", source_from:"upload", platform_type:1, image_uri, width, height, format:"", uri}`
    —— 传 `"tos-…"` 字符串会 `ret=1000`（2026-11-19 实测，零计费）。
-2. **`pro_hd` 有 `core_param`、没有 `gen_option`**。这一点与 legacy 相反。
+2. **`pro_hd` 没有 `core_param`**（也没有 `gen_option`）。旧版的
+   `core_param.model=image_upscale_paz` 已被 `hd_scene_type` / `original_image_strength` /
+   `detail_strength` 三项取代；多带 `core_param` 直接 `ret=1000`。
 3. **`extend` 是 `{"workspace_id": …}`**，不是 `{"root_model": …}`。
-4. `min_features` 必须带 `AIGC_GenerateType_ProHD` + `AIGC_PostEdit_UpscaleModel`。
+4. **`min_version` 是 `3.2.8`**，比 `version`(3.3.40) 低。照抄 3.3.40 会被拒。
+5. **`min_features` 只带 `AIGC_GenerateType_ProHD`**，`AIGC_PostEdit_UpscaleModel` 已被移除。
+   另：`metrics_extra.sceneOptions` 也不再带 `modelName` 与 `postEditSourceSize`。
 
 ### 4.1 `workspace_id` 的来路
 
@@ -493,7 +500,8 @@ curl -s http://127.0.0.1:8300/v1/images/generations \
 - **默认异步**：同步端点上不等待，直接 `202 + {task_id, poll_url}`；显式传
   `wait` 才阻塞（`postedit_sync_wait` 控制默认预算，0 = 不等）；
 - `prompt` 可省略（后编辑不需要提示词）；
-- `resolution` 只对 `jimeng-pro-hd` 有意义：`2k` / `4k` / `8k`，**三档同价 19 积分**，
+- `resolution` 只对 `jimeng-pro-hd` 有意义：`2k` / `4k` / `8k`，**按档计价 1/2/4 积分**
+  （2026-11-24 流水实测；旧 Paz 通道「三档同价 19 积分」已随模型下线作废），
   默认 `2k`；非法档位吸附到 `2k` 并写进 `degradations`；
 - `n` 恒为 1；`size` 对除扩图外的能力无效，都写进 `degradations`；
 - `mask`：**收下并落库**（`tasks.mask_uri`），但当前没有任何能力消费它；
@@ -508,7 +516,42 @@ curl -s http://127.0.0.1:8300/v1/images/generations \
 `None`（面板显示"未报价"），协调器不预扣。真实扣费以 `credit_history` 的
 `submit_id` 对账为准。
 
-实测：智能超清 2K = **19 积分**（UI 直发 5790 → 5771；网关端到端 5771 → 5752）。
+实测（2026-11-24，`credit_history` 原文）：
 
-⚠️ 上游回执的 `forecast_generate_cost` 会高估：网关任务行里记的是 **118**，实扣 19。
+| 档位 | 流水标题 | 实扣 | 产物尺寸（1024² 输入） |
+|---|---|---|---|
+| 2K | 智能超清2.0-2k | **1 积分** | 2160×2160 |
+| 4K | 智能超清2.0-4k | **2 积分** | 4096×4096 |
+| 8K | 智能超清2.0-8k | **4 积分** | 8192×8192 |
+
+价格随档位线性增长（1/2/4），与旧 Paz 通道的「三档同价 19」完全不同。
+产物长边 = 档位标称值 ×2 左右（2K→2160 而非 2048），别拿标称值校验尺寸。
+
+旧 Paz 通道（2026-11-19）曾实测 2K = 19 积分，该通道已于 11-24 前下线，
+19 这个数字**不再适用**，别拿它做预算。产物尺寸实测 4K=4096²、8K=8192²。
+
+⚠️ 上游回执的 `forecast_generate_cost` 会高估：任务行里记的是 **118**，实扣 2。
 面板上的"预估"只能当参考，对账以 `credit_history` 的 `amount` 为准。
+
+## 10. 图片工具全量实测（2026-11-25）
+
+账号 #1（maestro，6201 起），全部 8 个能力逐个真实提交，总消耗 **9 积分**：
+
+| 能力 | 结果 | 产物 | 扣费 |
+|---|---|---|---|
+| `jimeng-pro-hd` 2K / 4K / 8K | 成功 | 2160² / 4096² / 8192² | 1 / 2 / 4 |
+| `jimeng-hd`（上传图） | 成功 | 2048×2048 | **0（免费）** |
+| `jimeng-detail-fix`（作品引用） | 成功 | 1920×1920 | **0（免费）** |
+| `jimeng-inpaint`（mask + prompt） | 成功 | 4×1024² | 1 |
+| `jimeng-erase`（mask） | 成功 | 1×1024² | 1 |
+| `jimeng-cutout` | 成功 | 透明底 PNG 2048² | 0（免费） |
+| `jimeng-outpaint`（16:9） | 成功 | 1820×1024 | 1 |
+| `jimeng-smart-edit`（2k） | 成功 | 2048×2048 | 6 |
+
+对账口径：`credit_history` 按 `submit_id` 精确匹配 —— 只有 inpaint / erase / outpaint /
+smart-edit / pro-hd 有流水，`jimeng-hd` 与 `jimeng-detail-fix` **确实免费**，不是"提交没生效"。
+
+两个实测坑：
+1. **抠图需要显著主体**。1024² 棋盘渐变图直接 `ret=2046`；换成有主体的生成图立刻成功。
+2. **smart-edit 的档位决定价格**：1.5K=4、2K=6。`submit_postedit` 原先写死兜底 `"2k"`，
+   漏传档位会多扣 2 积分；已改为取 `ability.resolutions[0]`（1.5K）。

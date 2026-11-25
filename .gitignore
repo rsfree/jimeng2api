@@ -2,7 +2,12 @@
 __pycache__/
 *.pyc
 .pytest_cache/
-data/
+data/*
+# 音色表是运营数据但**随代码走**：部署后没有它，TTS 只剩 1 个内置音色。
+# 密钥、数据库、日志仍然忽略。
+!data/voices.json
+!data/voice_meta.json
+!data/voices_pending.json
 *.db
 *.db-wal
 *.db-shm

@@ -63,7 +63,10 @@ def _source(args, ability: postedit.Ability) -> dict:
         iid, hid = args.item.split(":", 1)
         return postedit.build_source(item_id=int(iid), origin_history_id=int(hid))
     if args.uri:
-        return postedit.build_source(image_uri=args.uri)
+        # 尺寸必须透传：pro_hd 的 `postEditSourceSize` 参与上游倍率判断，
+        # 传 0 会构造出与生产（`_prepare_postedit` 读真实宽高）不一致的提交体。
+        return postedit.build_source(image_uri=args.uri,
+                                     width=args.width, height=args.height)
     raise SystemExit("必须给 --item <item_id>:<history_id> 或 --uri <tos-…>")
 
 

@@ -272,10 +272,10 @@ curl -s http://127.0.0.1:8300/v1/images/generations \
 |---|---|---|---|
 | `jimeng-hd`（别名 `超清`/`变清晰`/`超分`） | `normal_hd`，gen_type 13 | 上传图 / 作品引用 | **已实测**：1024→2048 出图，**未扣费**（2 次样本） |
 | `jimeng-detail-fix`（`细节修复`） | `super_resolution`，gen_type 2 | **仅**作品引用 | **已实测**：成功输出 1920×1920、未扣费；**带上传图会失败且计费**（所以入口锁死） |
-| `jimeng-pro-hd`（`智能超清`） | `pro_hd`，gen_type 35 | 上传图 | **已实测**：2K 实扣 19 积分，`resolution` 选 2k/4k/8k（同价） |
+| `jimeng-pro-hd`（`智能超清`） | `pro_hd`，gen_type 35 | 上传图 | **已实测**：2K=1、4K=2、8K=4 积分，产物 2160²/4096²/8192² |
 | `jimeng-inpaint`（`局部重绘`） | `inpainting`（unified），gen_type 7 | 上传图 + **mask** | **已实测**：1 积分/4 张，只改蒙版区域 |
 | `jimeng-erase`（`消除笔`/`擦除`） | `inpainting_remove`（unified），gen_type 9 | 上传图 + **mask** | **已实测**：1 积分/1 张，只改蒙版区域 |
-| `jimeng-cutout`（`抠图`/`去背景`） | `saliency_seg` | 上传图 | **已实测**：免费、1.9s、返回透明底 PNG（**同步**，不进队列） |
+| `jimeng-cutout`（`抠图`/`去背景`） | `saliency_seg` | 上传图（**需显著主体**） | **已实测**：免费、1.9s、返回透明底 PNG（**同步**，不进队列）；无主体图报 ret=2046 |
 | `jimeng-outpaint`（`扩图`） | `outpainting`（unified），gen_type 8 | 上传图 | **已实测**：1 积分/4 张，`ratio=16:9` 输出 1820×1024 |
 | `jimeng-smart-edit`（`智能编辑`） | `smart_edit_v2`（unified_v2），gen_type 101 | 上传图 + **prompt**（可选 `markers`） | **已实测**：档位 1k~8k（价格随档位变：1.5k=4 积分、2k=6 积分），默认 1.5k |
 

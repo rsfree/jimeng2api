@@ -250,7 +250,7 @@ class JimengClient:
 
     # --------------------------------------------------------------- 计费写
     def submit_postedit(self, *, ability: postedit.Ability, source: dict,
-                        submit_id: str, resolution: str = "2k",
+                        submit_id: str, resolution: str = "",
                         count: int = 1, extra: dict | None = None,
                         workspace_id: str = "", prompt: str = "") -> str:
         """后编辑提交（智能超清 / 超清 / 细节修复 / 扩图）。
@@ -258,12 +258,24 @@ class JimengClient:
         与 t2i/i2i 共用 `/mweb/v1/aigc_draft/generate`，差别全在草稿与 `extend`。
         `pro_hd` 的草稿形态来自 2026-11-19 的真实抓包（docs/evidence/）。
         """
+        # 档位留空时取能力表第一项，与 service.create_task 同源。
+        # 写死 "2k" 会让 smart-edit 默认走 2K（6 积分）而不是标称的 1.5K（4 积分）。
+        if not resolution:
+            resolution = ability.resolutions[0] if ability.resolutions else "2k"
         body = postedit.build_submit_body(
             ability=ability, source=source, submit_id=submit_id, aid=int(self.aid),
             resolution=resolution, count=count, extra=extra,
             workspace_id=workspace_id, prompt=prompt)
         self._post(PATH_SUBMIT, body, task_id=submit_id)
         return submit_id
+
+    def post_json(self, path: str, body: dict) -> dict:
+        """通用 JSON POST —— 给非图片族能力（如 TTS）复用鉴权、sign 与错误分类。
+
+        只做透传，不改 `ret` 语义：`ret != 0` 仍按 `raise_for_ret` 抛 JimengError，
+        由调用方的适配器决定怎么归一。
+        """
+        return self._post(path, body)
 
     def submit_video(self, *, model, submit_id: str, prompt: str,
                      duration_ms: int, resolution: str,

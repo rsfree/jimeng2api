@@ -25,7 +25,7 @@ from fastapi.responses import FileResponse, JSONResponse, Response
 from fastapi.staticfiles import StaticFiles
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
-from . import api, db, panel_api, remote_browser, security
+from . import api, audio_api, db, panel_api, prompt_api, remote_browser, security
 from .config import settings
 from .coordinator import coordinator
 from .public_errors import HTTP_CODES, error_body, public_error
@@ -74,6 +74,8 @@ def create_app() -> FastAPI:
                   docs_url="/docs", redoc_url=None, lifespan=lifespan)
 
     app.include_router(api.router)
+    app.include_router(audio_api.router)
+    app.include_router(prompt_api.router)
     app.include_router(panel_api.router)
     app.include_router(panel_api.login_router)
 

@@ -58,6 +58,7 @@ class Settings:
     #: 后编辑族里**草稿形态未取证**的能力（智能超清 / 扩图）默认关闭。
     #: 打开等于允许用真实提交去试探上游，会计费 —— 由运维显式授权。
     postedit_experimental: bool
+    video_experimental: bool
     #: 后编辑提交时 `extend.workspace_id`（作品归属工作区）。0 = 账号默认工作区。
     #: UI 每次生成会新建一个工作区；网关不建（create 的 body 未取证），默认落默认区。
     postedit_workspace: str
@@ -102,6 +103,7 @@ def load() -> Settings:
         require_auth=_bool("JIMENG2API_REQUIRE_AUTH", True),
         coordinator_enabled=_bool("JIMENG2API_COORDINATOR", True),
         postedit_experimental=_bool("JIMENG2API_POSTEDIT_EXPERIMENTAL", False),
+        video_experimental=_bool("JIMENG2API_VIDEO_EXPERIMENTAL", False),
         postedit_workspace=_env("JIMENG2API_WORKSPACE_ID", "0"),
         base_url=_env("JIMENG_BASE", "https://jimeng.jianying.com"),
         site_origin=_env("JIMENG_ORIGIN", "https://jimeng.jianying.com"),
