@@ -8,6 +8,17 @@ os.environ["JIMENG2API_DB"] = os.path.join(_TMP, "test.db")
 os.environ["JIMENG2API_COORDINATOR"] = "0"
 os.environ["JIMENG2API_ADMIN_KEY"] = "sk-test-admin"
 
+# 音色表是运营数据，放在 data/ 下（受 JIMENG2API_DATA 控制）。测试用临时目录时
+# 也要带上一份，否则 tts 只能加载内置的 2 个音色 —— 那样等于没测到真实路径。
+import shutil  # noqa: E402
+from pathlib import Path  # noqa: E402
+
+_REPO_DATA = Path(__file__).resolve().parents[1] / "data"
+for _name in ("voices.json", "voice_meta.json"):
+    _src = _REPO_DATA / _name
+    if _src.exists():
+        shutil.copy(_src, Path(_TMP) / _name)
+
 import pytest  # noqa: E402
 from fastapi.testclient import TestClient  # noqa: E402
 

@@ -18,6 +18,8 @@ import base64
 import json
 from dataclasses import dataclass
 from pathlib import Path
+
+from ..config import settings
 from typing import Any
 
 #: 与图片共用同一个域名与鉴权，只是路径不同。
@@ -44,7 +46,9 @@ _BUILTIN_VOICES: dict[str, str] = {
 #: 外部音色表：`data/voices.json`。存在则合并覆盖内置项。
 #: 为什么单独放文件：音色 ID 只能靠 UI 逐个试听采集，属运营数据而非代码；
 #: 放文件里可以在不重启代码库的前提下补齐（重启进程即生效）。
-VOICES_FILE = Path(__file__).resolve().parents[2] / "data" / "voices.json"
+#: ⚠️ 必须走 settings.data_dir（容器里被映射成 /data），
+#: 用 `__file__` 拼仓库相对路径在容器内会指向空目录 —— 部署后才暴露的 bug。
+VOICES_FILE = Path(settings.data_dir) / "voices.json"
 
 
 def load_voices() -> dict[str, str]:
@@ -66,7 +70,7 @@ VOICES: dict[str, str] = load_voices()
 
 #: 音色元数据（性别/年龄/口音/风格/场景）。由 `scripts/build_voice_meta.py` 生成，
 #: 上游 feed 里 description/tags 全空，只能按名字推 —— 属运营数据，可手工校正。
-VOICE_META_FILE = Path(__file__).resolve().parents[2] / "data" / "voice_meta.json"
+VOICE_META_FILE = Path(settings.data_dir) / "voice_meta.json"
 
 #: 元数据缺失时的兜底，保证每个音色都有完整字段（筛选不会漏）。
 _META_DEFAULT = {
