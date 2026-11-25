@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
-# 部署到 ai-prod。发版（Release）不会自动部署，这是那一步的手动入口。
+# 部署到 ai-prod。
 #
-#   ./scripts/deploy.sh
+#   ./scripts/deploy.sh          # 手动 / 兜底
+#
+# **CI 会自动调用这个脚本**（.github/workflows/deploy.yml，release 完成后触发），
+# 所以这里不要塞只有本地才有的假设 —— 改它就等于改线上部署。
 #
 # 做三件事：同步源码 → 重建镜像并重启 → 等健康并打印版本。
 # 任何一步失败立即退出（set -e），不会留下"同步了但没重启"的半成品。

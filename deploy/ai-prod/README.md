@@ -60,19 +60,37 @@ uv run python scripts/bump_version.py --check     # 校验四处一致
 **跳过发版**：commit message 里带 `[skip release]`（纯文档/配置归位这类不发版的改动）。
 注意它匹配的是**整条 message** —— 描述这个开关的提交自己也会被跳过。
 
-## 发版 ≠ 部署
+## 发版即部署（CI）
 
-Release 只做版本标记，**不动服务器**。部署仍按下面的「日常更新」手动执行。
-所以 push 后线上版本会落后一个版本号，这是预期行为，不是发版失败。
+Release 完成后，`deploy` workflow 自动接管部署 —— **push main 即上线**：
 
-（要改成发版即部署，需要在仓库里配一条 SSH 私钥 secret 并加 deploy job —— 目前没做，
-因为部署会重建容器、30 秒不可用，不适合无条件跟着每次 push 跑。）
+```
+push main → release（自增 tag + 版本号提交）→ deploy（workflow_run）→ 服务器重建容器
+```
 
-## 日常更新
+几个刻意的设计：
+
+- **挂在 `workflow_run` 而不是塞进 release.yml**：release 会先把版本号 bump 后 push，
+  部署必须拿到 bump 之后的代码，否则线上版本永远比 tag 落后一档。
+- **部署失败不把发版标红**：这是两件独立的事，deploy 是独立 workflow。
+- **幂等**：部署前比对线上 `/healthz` 与 `app/__init__.py` 的版本，相同则跳过 ——
+  重复触发（排队的那次、手动 dispatch）不会白重建一遍容器。
+- **串行且不取消**：`concurrency` 设 `cancel-in-progress: false`，
+  因为「源码已 tar 上去但镜像没重建」= 半成品，比起多等一轮更糟。
+
+密钥用**专用部署密钥**（仓库 secret `DEPLOY_SSH_KEY`），注册在
+`root@210.121.44.245:/root/.ssh/authorized_keys`，与个人主 key 分开：
+撤销只需删掉那一行，不影响任何人登录。
+
+## 日常更新（手动 / 兜底）
+
+CI 挂了或要紧急绕过时，本地仍可一条命令部署：
 
 ```bash
 ./scripts/deploy.sh
 ```
+
+**CI 调的就是这个脚本**，两条路径共用同一套逻辑，不会漂移。
 
 一条命令做三件事：同步源码 → `up -d --build` → 轮询 `/healthz` 直到版本号与
 `app/__init__.py` 一致，最后打印镜像与容器状态。**任何一步失败即退出**，

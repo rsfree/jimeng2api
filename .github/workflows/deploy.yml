@@ -1,0 +1,103 @@
+# 部署：release 完成后自动部署到 ai-prod（210.121.44.245）。
+#
+# 为什么挂在 `workflow_run` 而不是在 release.yml 里加个 job：
+#   1. release 会先把版本号 bump 后 push（`chore(release): vX.Y.Z`），部署必须拿到
+#      **bump 之后**的代码，否则线上显示的版本永远比 tag 落后一档；
+#   2. 部署失败不该把发版标红 —— 发版已成功，这是两件独立的事；
+#   3. workflow_run 的 checkout 取默认分支最新提交，天然就是 bump 后的代码。
+#
+# 部署动作本身**不在这里重写**，直接调 scripts/deploy.sh，保证「本地手动部署」
+# 与「CI 部署」是同一条代码路径 —— 两套逻辑迟早会漂移。
+name: deploy
+
+on:
+  workflow_run:
+    workflows: [release]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# 串行部署：正在跑的部署不能被打断 —— 源码已 tar 上去但镜像没重建 = 半成品。
+# 排队的那次会在前一次结束后跑，届时幂等检查会把它变成 no-op。
+concurrency:
+  group: deploy-ai-prod
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    # tag 模式（人工补发）不部署：代码通常已在线上，且 head_branch 不是 main
+    if: >-
+      github.event_name == 'workflow_dispatch'
+      || (github.event.workflow_run.conclusion == 'success'
+          && github.event.workflow_run.head_branch == 'main')
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # 取 main 而不是 github.sha：要拿到 release job 刚 push 的 bump 提交
+          ref: main
+
+      - name: 装部署密钥
+        env:
+          KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+        run: |
+          set -euo pipefail
+          if [ -z "${KEY:-}" ]; then
+            echo "::error::缺少 secret DEPLOY_SSH_KEY"
+            exit 1
+          fi
+          mkdir -p ~/.ssh && chmod 700 ~/.ssh
+          printf '%s\n' "$KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          # runner 是干净环境，不写 known_hosts 会卡在 host key 确认
+          ssh-keyscan -H 210.121.44.245 >> ~/.ssh/known_hosts 2>/dev/null
+          # 先验一次连通性：密钥/网络问题要在这里暴露，而不是部署到一半
+          ssh -i ~/.ssh/deploy_key -o BatchMode=yes -o ConnectTimeout=15 \
+              root@210.121.44.245 'echo "ssh ok: $(hostname)"'
+
+      - name: 幂等检查
+        id: guard
+        run: |
+          set -euo pipefail
+          TARGET=$(grep -oE '[0-9]+\.[0-9]+\.[0-9]+' app/__init__.py | head -1)
+          CURRENT=$(curl -s --max-time 10 https://jimengcn.1task.cn/healthz \
+                    | grep -oE '"version":"[^"]*"' | cut -d'"' -f4 || true)
+          echo "目标版本 $TARGET / 线上 ${CURRENT:-（取不到）}"
+          # 版本号由 release 每次 push 自增，一一对应一次代码状态，
+          # 所以「版本相同」等价于「这次没什么可部署的」
+          if [ "$TARGET" = "$CURRENT" ]; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            echo "线上已是 $TARGET，跳过部署"
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: 部署
+        if: steps.guard.outputs.skip != 'true'
+        env:
+          DEPLOY_KEY: /home/runner/.ssh/deploy_key
+          DEPLOY_HOST: root@210.121.44.245
+        run: ./scripts/deploy.sh
+
+      - name: 公网验证
+        if: steps.guard.outputs.skip != 'true'
+        run: |
+          set -euo pipefail
+          TARGET=$(grep -oE '[0-9]+\.[0-9]+\.[0-9]+' app/__init__.py | head -1)
+          for i in $(seq 1 10); do
+            BODY=$(curl -s --max-time 10 https://jimengcn.1task.cn/healthz || true)
+            if printf '%s' "$BODY" | grep -q "\"version\":\"$TARGET\""; then
+              echo "公网已就绪：$BODY"
+              curl -s --max-time 15 https://jimengcn.1task.cn/v1/audio/capabilities \
+                | python3 -c "import json,sys;d=json.load(sys.stdin);print('voice_count:',d.get('voice_count'))" \
+                || true
+              exit 0
+            fi
+            sleep 5
+          done
+          echo "::error::公网 10 次探测内没返回 $TARGET：${BODY:-（空）}"
+          exit 1
